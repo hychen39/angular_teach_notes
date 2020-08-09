@@ -13,7 +13,7 @@
     - 事件連結(Event binding)
   
 
-Unit 04 應用程式內切換不同元件的樣版 (Application routing)
+[Unit 04 應用程式內切換不同元件的樣版 (Application routing)](./u04-app_routing.md)
     - 匯入 `AppRoutes` 模組
     - 設定各元件的導航路徑
     - 設定要切換顯示的地方
