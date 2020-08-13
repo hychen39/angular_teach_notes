@@ -28,10 +28,13 @@ Angular 使用 `AppRoutingModule` 進行元件的路徑(route)設定及導向。
 4. 在要導向結果的元件樣版處, 加入 `<router-outlet>` 做為導向的出口。
 5. 使用 HTML 元素導向或者程式導向。
 
+## 功能需求
+TODO
+
 ## 實作
 ### 建立不同的元件
 
-建立以卡兩個元件:
+建立以下兩個元件:
 ```
 ng g c stock/stock-list
 ng g c stock/create-stock

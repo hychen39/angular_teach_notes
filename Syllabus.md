@@ -21,3 +21,18 @@
     - 使用程式進行導航
 
 
+[Unit 05 導向時傳遞參數](./u05-app_routing_param.md)
+    - 取得目前的導向路徑值 `ActivatedRoute`
+    - 取得傳入之參數(Query Parameters)
+
+
+Unit 06 Angular MVC 模式: 建立 model
+    - 建立股票模型
+  
+![](css/sy-i01.png)
+
+Unit 07 Service 
+    - 提供股票資料
+
+
+Unit 0X 表單(template driven form)
