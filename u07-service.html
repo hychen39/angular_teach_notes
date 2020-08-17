@@ -1,0 +1,549 @@
+<!DOCTYPE html><html><head>
+      <title>u07-service</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+@media print {
+  .markdown-preview html body * {
+    font-family: "cwTeXYen", serif;
+    font-size: 16pt;
+    /* -webkit-transform: scale(1.2); */
+  }
+  .markdown-preview html body pre {
+    border: 1px solid #616060;
+  }
+  .markdown-preview img[alt] {
+    max-width: 70%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .markdown-preview pre[class*="language-"] {
+    overflow: visible;
+  }
+}
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
+      <link rel="stylesheet" href="css\article_01.css">
+<h1 class="mume-header" id="unit-07-%E6%9C%8D%E5%8B%99service%E8%88%87%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5dependency-injection">Unit 07 &#x670D;&#x52D9;(Service)&#x8207;&#x4F9D;&#x8CF4;&#x6CE8;&#x5165;(Dependency Injection)</h1>
+
+<h2 class="mume-header" id="%E6%9C%8D%E5%8B%99service%E8%88%87%E6%9C%8D%E5%8B%99%E6%B3%A8%E5%85%A5%E5%99%A8injector">&#x670D;&#x52D9;(Service)&#x8207;&#x670D;&#x52D9;&#x6CE8;&#x5165;&#x5668;(Injector)</h2>
+
+<h3 class="mume-header" id="%E6%9C%8D%E5%8B%99service">&#x670D;&#x52D9;(Service)</h3>
+
+<p>&#x670D;&#x52D9;&#x7528;&#x4F86;&#x5C01;&#x88DD;&#x5546;&#x696D;&#x908F;&#x8F2F;(Business Logic)&#x6216;&#x8005;&#x8CC7;&#x6599;&#x5B58;&#x53D6;&#x908F;&#x8F2F;(Data Access Logic).</p>
+<p>Angular &#x4F7F;&#x7528;&#x4F9D;&#x8CF4;&#x6CE8;&#x5165;(Dependency Injection)&#x7684;&#x65B9;&#x5F0F;, &#x63D0;&#x4F9B;&#x670D;&#x52D9;&#x7269;&#x4EF6;&#x7D66;&#x9700;&#x8981;&#x7684;&#x5143;&#x4EF6;(Component)&#x6216;&#x5176;&#x5B83;&#x670D;&#x52D9;(Service)</p>
+<p><img src="https://angular.tw/generated/images/guide/architecture/injector-injects.png" alt></p>
+<p>&#x4F8B;&#x5982;: &#x4F7F;&#x7528; <a href="https://angular.io/api/router">Router Service</a> &#x5C0E;&#x5411;&#x5230;&#x4E0D;&#x540C;&#x7684;&#x5143;&#x4EF6;; &#x4F7F;&#x7528; <a href="https://angular.io/guide/http">HTTP Service</a> &#x5411;&#x5F8C;&#x7AEF;&#x4F3A;&#x670D;&#x5668;&#x5B58;&#x53D6;&#x8CC7;&#x6599;&#x3002;</p>
+<h3 class="mume-header" id="%E6%B3%A8%E5%85%A5%E5%99%A8injector">&#x6CE8;&#x5165;&#x5668;(Injector)</h3>
+
+<p>Angular &#x7684;&#x6CE8;&#x5165;&#x5668;(Injector)&#x8CA0;&#x8CAC;&#x670D;&#x52D9;&#x6CE8;&#x5165;&#x7684;&#x5DE5;&#x4F5C;&#x3002;&#x6CE8;&#x5165;&#x5668;&#x7531; Angular &#x7BA1;&#x7406;, Developer &#x4E0D;&#x9700;&#x8981;&#x4ECB;&#x5165; Injector &#x7684;&#x7522;&#x751F;&#x6216;&#x57F7;&#x884C;&#x3002;</p>
+<p>Developer &#x53EA;&#x9700;&#x544A;&#x77E5; Injector &#x90A3;&#x4E9B;&#x670D;&#x52D9;&#x9700;&#x8981;&#x88AB;&#x6CE8;&#x5165;&#x3002;Developer &#x4E0D;&#x7528;&#x7BA1;&#x7406;&#x88AB;&#x6CE8;&#x5165;&#x670D;&#x52D9;&#x7684;&#x7269;&#x4EF6;&#x548C;&#x5176;&#x76F8;&#x4F9D;&#x6027;&#xFF0C;Injector &#x6703;&#x8CA0;&#x8CAC;&#x7BA1;&#x7406;&#x3002;</p>
+<p><strong>&#x6CE8;&#x5165;&#x5668;&#x7684;&#x968E;&#x5C64;&#x6027;(Hierarchy)</strong></p>
+<p>Angular &#x7684;&#x6CE8;&#x5165;&#x5668;&#x6709;&#x5169;&#x500B;&#x5C64;&#x7D1A;: Module &#x53CA; Element level.</p>
+<p>Module Level &#x7684;&#x6CE8;&#x5165;&#x5668;&#x70BA; <a href="https://angular.tw/guide/hierarchical-dependency-injection#moduleinjector">ModuleInjector</a>, &#x6BCF;&#x4E00;&#x500B;&#x6A21;&#x7D44;&#x64C1;&#x6709;&#x4E00;&#x500B; ModuleInjector. Element Level &#x7684;&#x6CE8;&#x5165;&#x5668;&#x70BA; [ElementInjector](&#x6703;&#x70BA;&#x6BCF;&#x500B; DOM &#x5143;&#x7D20;&#x96B1;&#x5F0F;&#x5EFA;&#x7ACB; ElementInjector&#x3002;), Angular &#x6703;&#x70BA;&#x6BCF;&#x500B; DOM &#x5143;&#x7D20;&#x81EA;&#x52D5;&#x5EFA;&#x7ACB; ElementInjector&#x3002;</p>
+<p>&#x968E;&#x5C64;&#x5F0F;&#x7684;&#x6CE8;&#x5165;&#x5668;&#x53EF;&#x4F9D;&#x5143;&#x4EF6;&#x7684;&#x9700;&#x6C42;&#x6CE8;&#x5165;&#x66F4;&#x660E;&#x78BA;&#x7684;&#x670D;&#x52D9;&#x3002;</p>
+<p><a href="https://angular.tw/guide/hierarchical-dependency-injection#scenario-specialized-providers">&#x61C9;&#x7528;&#x7684;&#x5834;&#x666F;: Specialized Providers</a></p>
+<p>&#x8003;&#x616E;&#x4E00;&#x500B;&#x4F9D;&#x8CF4;&#x65BC;&#x4E00;&#x7CFB;&#x5217;&#x670D;&#x52D9;&#x7684; Car &#x5143;&#x4EF6;&#x3002; &#x5047;&#x8A2D;&#x4F60;&#x5728;&#x6839;&#x6CE8;&#x5165;&#x5668;&#xFF08;&#x4EE3;&#x865F; A&#xFF09;&#x4E2D;&#x914D;&#x7F6E;&#x4E86;&#x901A;&#x7528;&#x7684;&#x63D0;&#x4F9B;&#x8005;&#xFF1A;CarService&#x3001;EngineService &#x548C; TiresService&#x3002;</p>
+<p>&#x4F60;&#x5EFA;&#x7ACB;&#x4E86;&#x4E00;&#x500B;&#x8ECA;&#x8F1B;&#x5143;&#x4EF6;&#xFF08;A&#xFF09;&#xFF0C;&#x5B83;&#x986F;&#x793A;&#x4E00;&#x500B;&#x5F9E;&#x53E6;&#x5916;&#x4E09;&#x500B;&#x901A;&#x7528;&#x670D;&#x52D9;&#x69CB;&#x9020;&#x51FA;&#x7684;&#x8ECA;&#x8F1B;&#x3002;</p>
+<p>&#x7136;&#x5F8C;&#xFF0C;&#x4F60;&#x5EFA;&#x7ACB;&#x4E00;&#x500B;&#x5B50;&#x5143;&#x4EF6;&#xFF08;B&#xFF09;&#xFF0C;&#x5B83;&#x70BA; CarService &#x548C; EngineService &#x5B9A;&#x7FA9;&#x4E86;&#x81EA;&#x5DF1;&#x7279;&#x6709;&#x7684;&#x63D0;&#x4F9B;&#x8005;&#xFF0C;&#x5B83;&#x5011;&#x5177;&#x6709;&#x9069;&#x7528;&#x65BC;&#x5143;&#x4EF6; B &#x7684;&#x7279;&#x6709;&#x80FD;&#x529B;&#x3002;</p>
+<p>&#x5143;&#x4EF6; B &#x662F;&#x53E6;&#x4E00;&#x500B;&#x5143;&#x4EF6; C &#x7684;&#x7236;&#x5143;&#x4EF6;&#xFF0C;&#x800C;&#x5143;&#x4EF6; C &#x53C8;&#x5B9A;&#x7FA9;&#x4E86;&#x81EA;&#x5DF1;&#x7684;&#xFF0C;&#x66F4;&#x7279;&#x6B8A;&#x7684; CarService &#x63D0;&#x4F9B;&#x8005;&#x3002;</p>
+<p><img src="https://angular.tw/generated/images/guide/dependency-injection/car-components.png" alt></p>
+<p>&#x5728;&#x6700;&#x6DF1;&#x5C64;&#x7684;&#x5143;&#x4EF6; C &#x6642;, &#x4F7F;&#x7528;&#x4E86; CarService 3 &#x670D;&#x52D9;, EngineService2 &#x670D;&#x52D9;&#x53CA; TireService &#x670D;&#x52D9;&#xFF0C;&#x9019;&#x4E9B;&#x670D;&#x52D9;&#x5206;&#x5225;&#x4F86;&#x81EA;&#x65BC;: &#x5143;&#x4EF6; C &#x7684; Injector, &#x5143;&#x4EF6; B &#x7684; Injector, &#x53CA;&#x5143;&#x4EF6; A &#x7684; Injector.</p>
+<p><img src="https://angular.tw/generated/images/guide/dependency-injection/injector-tree.png" alt></p>
+<h3 class="mume-header" id="%E5%90%91%E6%B3%A8%E5%85%A5%E5%99%A8%E8%A8%BB%E5%86%8A%E6%9C%8D%E5%8B%99">&#x5411;&#x6CE8;&#x5165;&#x5668;&#x8A3B;&#x518A;&#x670D;&#x52D9;</h3>
+
+<h4 class="mume-header" id="moduleinjector">ModuleInjector</h4>
+
+<p><strong>&#x65B9;&#x6CD5; 1: &#x5728;&#x53EF;&#x6CE8;&#x5165;&#x670D;&#x52D9;&#x4E2D;&#x6307;&#x5B9A;&#x7279;&#x5B9A;&#x6A21;&#x7D44;&#x7684;&#x6CE8;&#x5165;&#x5668;</strong></p>
+<p>Service &#x985E;&#x5225;&#x6703;&#x4F7F;&#x7528; <a href="https://angular.tw/api/core/Injectablehttps://angular.tw/api/core/Injectable"><code>@Injectable</code> &#x88DD;&#x98FE;&#x5668;(Decorator)</a> &#x8A2D;&#x5B9A;&#x985E;&#x5225;&#x3002;&#x4F7F;&#x7528; <code>providedIn</code> &#x88DD;&#x98FE;&#x5668;&#x7279;&#x6027;&#x6307;&#x5B9A;&#x6CE8;&#x5165;&#x5668;&#x3002;</p>
+<pre data-role="codeBlock" data-info="typescript" class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Injectable <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;@angular/core&apos;</span><span class="token punctuation">;</span>
+
+@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  providedIn<span class="token punctuation">:</span> <span class="token string">&apos;root&apos;</span>  <span class="token comment">// &lt;--provides this service in the root ModuleInjector</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ItemService</span> <span class="token punctuation">{</span>
+  name <span class="token operator">=</span> <span class="token string">&apos;telephone&apos;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</pre><p>&#x7576; <code>providedIn</code> &#x8A2D;&#x5B9A;&#x70BA; <code>root</code>, &#x8868;&#x793A;&#x8A72;&#x670D;&#x52D9;&#x4F7F;&#x7528;&#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#x7684;&#x555F;&#x52D5;&#x6A21;&#x7D44; (Bootstrap Module) &#x7684;&#x6CE8;&#x5165;&#x5668;&#x3002;&#x53EF;&#x4EE5; Angular &#x5C08;&#x6848;&#x7684; <code>main.ts</code> &#x4E2D;&#x627E;&#x5230;&#x555F;&#x52D5;&#x6A21;&#x7D44;, &#x540D;&#x7A31;&#x901A;&#x5E38;&#x70BA; <code>AppModule</code>&#x3002;&#x5C6C;&#x65BC;&#x6B64;&#x6A21;&#x7D44;&#x4E0B;&#x7684;&#x5143;&#x4EF6;&#x5728;&#x6CE8;&#x5165;&#x6B64;&#x670D;&#x52D9;&#x5BE6;&#x9AD4;&#x6642;, &#x7686;&#x6703;&#x4F7F;&#x7528; <code>AppModule</code> &#x7684;&#x6CE8;&#x5165;&#x5668;&#x3002;</p>
+<p>&#x6216;&#x8005;, &#x60F3;&#x8981;&#x6B64;&#x670D;&#x52D9;&#x4F7F;&#x7528;&#x7279;&#x5B9A;&#x6A21;&#x7D44;&#x7684;&#x6CE8;&#x5165;&#x5668;, &#x5982; <code>UserModule</code> &#x7684;&#x6CE8;&#x5165;&#x5668;&#xFF0C;&#x5247;:</p>
+<pre data-role="codeBlock" data-info="typescript" class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Injectable <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;@angular/core&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> UserModule <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;./user.module&apos;</span><span class="token punctuation">;</span>
+
+@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  providedIn<span class="token punctuation">:</span> <span class="token string">&apos;UserModule&apos;</span>  <span class="token comment">// &lt;--provides this service in the root ModuleInjector</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ItemService</span> <span class="token punctuation">{</span>
+  name <span class="token operator">=</span> <span class="token string">&apos;telephone&apos;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</pre><p>&#x4F86;&#x6E90;: <a href="https://angular.io/guide/providers#providedin-and-ngmodules">providedIn and NgModules @ Angular</a></p>
+<p>&#x5982;&#x6B64;, &#x53EA;&#x6709;&#x5728; <code>UserModule</code> &#x6A21;&#x7D44;&#x5167;&#x624D;&#x53EF;&#x4F7F;&#x7528;&#x6B64;&#x670D;&#x52D9;&#x3002;</p>
+<p><strong>&#x65B9;&#x6CD5; 2: &#x5728;&#x7279;&#x5B9A;&#x6A21;&#x7D44;&#x4E2D;&#x63D0;&#x4F9B;&#x53EF;&#x6CE8;&#x5165;&#x670D;&#x52D9;&#x7684;&#x540D;&#x7A31;</strong></p>
+<p>&#x5728;&#x6A21;&#x7D44;&#x7684; <code>@NgModule</code> &#x88DD;&#x98FE;&#x5B50;&#x7684; <code>providers</code> &#x7279;&#x6027;&#x6307;&#x5B9A;&#x6B64;&#x6A21;&#x7D44;&#x6CE8;&#x5165;&#x5668;&#x8981;&#x6CE8;&#x5165;&#x7684;&#x591A;&#x500B;&#x670D;&#x52D9;&#x5BE6;&#x9AD4;&#x3002;</p>
+<p>&#x82E5; <code>ItemService</code> &#x670D;&#x52D9;&#x6C92;&#x6709;&#x4F7F;&#x7528; <code>providedIn</code>&#x7279;&#x6027;:</p>
+<pre data-role="codeBlock" data-info="typescript" class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Injectable <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;@angular/core&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> UserModule <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;./user.module&apos;</span><span class="token punctuation">;</span>
+
+@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ItemService</span> <span class="token punctuation">{</span>
+  name <span class="token operator">=</span> <span class="token string">&apos;telephone&apos;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</pre><p>&#x90A3;&#x9EBC;, &#x53EF;&#x4EE5;&#x5728; <code>AppModule</code> &#x4E2D;&#x4F7F;&#x7528; <code>providers</code> &#x7279;&#x6027;:</p>
+<pre data-role="codeBlock" data-info="typescript" class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span>ItemService<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;services/ItemService.ts&apos;</span>
+
+<span class="token comment">// @NgModule decorator with its metadata</span>
+@<span class="token function">NgModule</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  declarations<span class="token punctuation">:</span> <span class="token punctuation">[</span>AppComponent<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  imports<span class="token punctuation">:</span> <span class="token punctuation">[</span>BrowserModule<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>ItemService<span class="token punctuation">]</span><span class="token punctuation">,</span>
+  bootstrap<span class="token punctuation">:</span> <span class="token punctuation">[</span>AppComponent<span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppModule</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+</pre><h4 class="mume-header" id="elementinjector">ElementInjector</h4>
+
+<p>&#x5728;&#x7279;&#x5B9A;&#x5143;&#x4EF6;&#x4E2D;&#x63D0;&#x4F9B;&#x53EF;&#x6CE8;&#x5165;&#x670D;&#x52D9;&#x7684;&#x540D;&#x7A31;&#x3002;&#x4F7F;&#x7528;&#x5143;&#x4EF6;&#x7684; <a href="https://angular.io/api/core/Component#description"><code>@Component</code> &#x7684; <code>providers</code> &#x7279;&#x6027;</a>&#x4F86;&#x6307;&#x5B9A;&#x53EF;&#x6CE8;&#x5165;&#x7684;&#x670D;&#x52D9;&#x985E;&#x5225;&#x3002;&#x8A72;&#x5143;&#x4EF6;&#x7684;&#x6CE8;&#x5165;&#x5668;&#x6703;&#x4F9D;&#x6B64;&#x6CE8;&#x5165;&#x670D;&#x52D9;&#x5BE6;&#x9AD4;(Service Instance)&#x4F9B;&#x5143;&#x4EF6;&#x4F7F;&#x7528;&#x3002;</p>
+<p>&#x4F8B;&#x5982;, &#x5728; <code>StockListComponent</code> &#x5143;&#x4EF6;&#x4E2D;&#x6CE8;&#x5165; <code>ItemService</code> &#x670D;&#x52D9;&#x3002;</p>
+<pre data-role="codeBlock" data-info="typescript" class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Component<span class="token punctuation">,</span> OnInit <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;@angular/core&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>ItemService<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;services/ItemService.ts&apos;</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">&apos;app-stock-list&apos;</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">&apos;./stock-list.component.html&apos;</span><span class="token punctuation">,</span>
+  styleUrls<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">&apos;./stock-list.component.css&apos;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>ItemService<span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">StockListComponent</span> <span class="token keyword">implements</span> <span class="token class-name">OnInit</span> <span class="token punctuation">{</span>
+  <span class="token comment">// &#x670D;&#x52D9;&#x7684;&#x6CE8;&#x5165;&#x9EDE;</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token parameter">itemService<span class="token punctuation">:</span> ItemService</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+  <span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</pre><h3 class="mume-header" id="%E6%9C%8D%E5%8B%99%E5%AF%A6%E9%AB%94%E7%9A%84%E6%B3%A8%E5%85%A5%E9%BB%9E">&#x670D;&#x52D9;&#x5BE6;&#x9AD4;&#x7684;&#x6CE8;&#x5165;&#x9EDE;</h3>
+
+<p>&#x670D;&#x52D9;&#x5BE6;&#x9AD4;&#x7684;&#x6CE8;&#x5165;&#x9EDE;&#x4F4D;&#x65BC;&#x5143;&#x4EF6;&#x7684;&#x5EFA;&#x69CB;&#x5B50;&#x7684;&#x53C3;&#x6578;&#x3002;</p>
+<p>&#x5982;&#x524D;&#x4F8B; <code>StockListComponent</code> &#x7684; <code>constructor()</code>&#x3002;</p>
+<h2 class="mume-header" id="%E9%9C%80%E6%B1%82">&#x9700;&#x6C42;</h2>
+
+<p><code>StockService</code> &#x63D0;&#x4F9B;&#x80A1;&#x7968;&#x7684;&#x8CC7;&#x6599;&#x3002;</p>
+<h2 class="mume-header" id="%E5%AF%A6%E4%BD%9C">&#x5BE6;&#x4F5C;</h2>
+
+<h3 class="mume-header" id="%E5%BB%BA%E7%AB%8B-stock-service">&#x5EFA;&#x7ACB; <code>Stock</code> Service:</h3>
+
+<p>&#x5EFA;&#x7ACB; <code>Stock</code> Service:</p>
+<pre data-role="codeBlock" data-info class="language-"><code>ng g service services/stock
+</code></pre><pre data-role="codeBlock" data-info="typescript" class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Injectable <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;@angular/core&apos;</span><span class="token punctuation">;</span>
+
+@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  providedIn<span class="token punctuation">:</span> <span class="token string">&apos;root&apos;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">StockService</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</pre><p>&#x65B0;&#x589E;&#x79C1;&#x6709;&#x6210;&#x54E1;&#x8B8A;&#x6578; <code>stocks: Stock[]</code>, &#x4E26;&#x63D0;&#x4F9B;&#x5176; get &#x65B9;&#x6CD5;:</p>
+<pre data-role="codeBlock" data-info class="language-"><code>...
+export class StockService {
+  private stocks: Stock[];
+
+  constructor() { }
+
+  public getStocks(): Stock[] {
+    return this.stocks;
+  }
+}
+</code></pre><p>&#x5728; <code>constructor()</code> &#x521D;&#x59CB;&#x5316;&#x79C1;&#x6709;&#x6210;&#x54E1;&#x8B8A;&#x6578; <code>stocks</code>&#x3002;<br>
+&#x5B8C;&#x6210;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;:</p>
+<pre data-role="codeBlock" data-info class="language-"><code>import { Stock } from &apos;./../model/stock&apos;;
+import { Injectable } from &apos;@angular/core&apos;;
+
+@Injectable({
+  providedIn: &apos;root&apos;
+})
+export class StockService {
+  private stocks: Stock[];
+
+  constructor() {
+    this.stocks = [
+      new Stock(&apos;Test Stock Company&apos;, &apos;TSC&apos;, 85, 80),
+      new Stock(&apos;Alice Stock Company&apos;, &apos;ASC&apos;, 50, 70),
+      new Stock(&apos;The Duck Stock Company&apos;, &apos;DSC&apos;, 876, 765)
+    ];
+  }
+
+  public getStocks(): Stock[] {
+    return this.stocks;
+  }
+}
+</code></pre><h3 class="mume-header" id="%E5%9C%A8-stocklist-%E5%85%83%E4%BB%B6%E4%B8%AD%E6%B3%A8%E5%85%A5-stockservice-%E6%9C%8D%E5%8B%99">&#x5728; StockList &#x5143;&#x4EF6;&#x4E2D;&#x6CE8;&#x5165; StockService &#x670D;&#x52D9;</h3>
+
+<p>&#x958B;&#x555F; <code>src\app\stock\stock-list\stock-list.component.ts</code>&#x3002;</p>
+<p>&#x5728;&#x5EFA;&#x69CB;&#x5B50;&#x4E2D;&#x6CE8;&#x5165; <code>StockService</code> &#x670D;&#x52D9;</p>
+<pre data-role="codeBlock" data-info class="language-"><code>constructor(private stockService: StockService) { }
+</code></pre><p>&#x65B0;&#x589E; <code>getStocks()</code> &#x56DE;&#x50B3; <code>StockService</code> &#x670D;&#x52D9;&#x63D0;&#x4F9B;&#x7684;&#x80A1;&#x7968;&#x8CC7;&#x6599;:</p>
+<pre data-role="codeBlock" data-info class="language-"><code>getStocks(): Stock[]{
+    return this.stockService.getStocks();
+}
+</code></pre><p>&#x5B8C;&#x6210;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;:</p>
+<pre data-role="codeBlock" data-info class="language-"><code>import { StockService } from &apos;./../../services/stock.service&apos;;
+import { Component, OnInit } from &apos;@angular/core&apos;;
+import { Stock } from &apos;../../model/stock&apos;;
+
+@Component({
+  selector: &apos;app-stock-list&apos;,
+  templateUrl: &apos;./stock-list.component.html&apos;,
+  styleUrls: [&apos;./stock-list.component.css&apos;]
+})
+export class StockListComponent implements OnInit {
+
+  
+  constructor(private stockService: StockService) { }
+
+  ngOnInit() {
+
+  }
+
+  getStocks(): Stock[]{
+    return this.stockService.getStocks();
+  }
+}
+</code></pre><h3 class="mume-header" id="%E4%BF%AE%E6%94%B9-stocklist-%E5%85%83%E4%BB%B6%E7%9A%84%E6%A8%A3%E7%89%88-%E4%BB%A5%E9%A1%AF%E7%A4%BAstockservice-%E6%9C%8D%E5%8B%99%E6%8F%90%E4%BE%9B%E7%9A%84%E8%82%A1%E7%A5%A8%E8%B3%87%E6%96%99">&#x4FEE;&#x6539; StockList &#x5143;&#x4EF6;&#x7684;&#x6A23;&#x7248;, &#x4EE5;&#x986F;&#x793A;<code>StockService</code> &#x670D;&#x52D9;&#x63D0;&#x4F9B;&#x7684;&#x80A1;&#x7968;&#x8CC7;&#x6599;</h3>
+
+<p>&#x958B;&#x555F; <code>src\app\stock\stock-list\stock-list.component.html</code>&#x3002;</p>
+<p>&#x4F7F;&#x7528; <a href="https://angular.tw/guide/template-syntax#ngfor"><code>*ngFor</code> &#x7522;&#x751F;&#x91CD;&#x8986;&#x7684; HTML &#x7D50;&#x69CB;</a>:</p>
+<pre data-role="codeBlock" data-info="html" class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">*ngFor</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>let stock of getStocks()<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+    &lt;a [routerLink] = &quot;[&apos;/stock/detail&apos;, stock.name]&quot;&gt; 
+    {{stock.code}} [{{stock.name}}]  
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+</pre><p><code>*ngFor</code> &#x6307;&#x4EE4;&#x4F7F;&#x7528;&#x8FF4;&#x5708;&#x4F86;&#x904D;&#x6B77;&#x9663;&#x5217;&#x4E2D;&#x7684;&#x8CC7;&#x6599;&#x3002;&#x6211;&#x5011;&#x4F7F;&#x7528; <code>*ngFor</code> &#x6307;&#x4EE4;&#x986F;&#x793A; <code>Stock[]</code> &#x5167;&#x7684;&#x5167;&#x5BB9;&#x3002;</p>
+<p>&#x5728; <code>*ngFor</code> &#x96D9;&#x5F15;&#x865F;&#x8868;&#x793A;&#x5F0F;&#x4E2D;&#x4F7F;&#x7528;<a href="https://angular.tw/guide/template-syntax#microsyntax">&#x5FAE;&#x8A9E;&#x6CD5;(microsyntax)</a>&#x8A2D;&#x5B9A;<code>*ngFor</code> &#x7684;&#x8F38;&#x5165;&#x503C;&#x3002;</p>
+<p>let &#x95DC;&#x9375;&#x5B57;&#x5BA3;&#x544A;&#x7BC4;&#x672C;&#x8F38;&#x5165;&#x8B8A;&#x6578;(template input variable), &#x53EF;&#x4EE5;&#x5728;&#x7BC4;&#x672C;&#x4E2D;&#x53C3;&#x8003;&#x5B83;&#x3002;&#x6211;&#x5011;&#x53EF;&#x4EE5;&#x628A;&#x7BC4;&#x672C;&#x8F38;&#x5165;&#x8B8A;&#x6578;&#x8996;&#x70BA;<code>*ngFor</code>&#x7684;&#x5340;&#x57DF;&#x8B8A;&#x6578;, &#x56E0;&#x70BA;&#x9019;&#x4E9B;&#x8B8A;&#x6578;&#x53EA;&#x80FD;&#x6B64; <code>*ngFor</code> &#x6307;&#x4EE4;&#x7684;&#x7BC4;&#x570D;&#x5167;&#x4F7F;&#x7528;&#x3002;</p>
+<p>&#x4F8B;&#x5982; <code>stock</code> &#x662F; <code>*ngFor</code>&#x7684;&#x5340;&#x57DF;&#x8B8A;&#x6578;, &#x4EE3;&#x8868;&#x76EE;&#x524D;&#x62DC;&#x8A2A;&#x5230;&#x7684; Stock &#x985E;&#x5225;&#x5BE6;&#x9AD4;&#x3002;</p>
+<p><code>of</code> &#x95DC;&#x9375;&#x5B57;&#x6307;&#x5B9A;&#x8981;&#x904D;&#x6B77;&#x7684;&#x9663;&#x5217;&#x3002;<code>getStocks()</code> &#x56DE;&#x50B3; <code>Stock[]</code>&#x3002;</p>
+<p>&#x6709;&#x95DC; <code>*ngFor</code> &#x7684;&#x9032;&#x4E00;&#x6B65;&#x8AAA;&#x660E;&#x53C3;&#x8003;: <a href="https://angular.tw/guide/structural-directives#inside-ngfor">&#x7D50;&#x69CB;&#x578B;&#x6307;&#x4EE4;</a>&#x3002;</p>
+<p>&#x5B8C;&#x6210;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;:</p>
+<pre data-role="codeBlock" data-info="html" class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>stock-list works!<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token style-attr language-css"><span class="token attr-name"> <span class="token attr-name">style</span></span><span class="token punctuation">=&quot;</span><span class="token attr-value"><span class="token property">list-style-type</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span></span><span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">routerLink</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>/stock/detail/100<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>100 TSC<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">&gt;</span></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">[routerLink]</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>[<span class="token punctuation">&apos;</span>/stock/detail<span class="token punctuation">&apos;</span>, 200]<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>200 AIG<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">*ngFor</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>let stock of getStocks()<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">[routerLink]</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">&quot;</span>[<span class="token punctuation">&apos;</span>/stock/detail<span class="token punctuation">&apos;</span>, stock.name]<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span> 
+        {{stock.code}} [{{stock.name}}] 
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span>
+</pre><h3 class="mume-header" id="%E5%9F%B7%E8%A1%8C%E7%B5%90%E6%9E%9C">&#x57F7;&#x884C;&#x7D50;&#x679C;</h3>
+
+<p><img src="data:image/png;charset=utf-8;base64,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KVjTBXD5ZFroayLUMZhz9DgFcFkMGkpV5uT0P73Nj1/850VNw754c87v60tz1wzIx1s4x/Vwu9eCc5+RBKxjAGigvrQt5/FE7iSVwKVgZVaJ5qvClU+GhboerKaEXE0jkQR2c0u+OQBEFooCuIiISAFSL3QREZECpAAuIiJSgBTARURECpACuIiISAFSABcRESlACuAiIiIFSAFcRESkACmAi4iIFCAFcBERkQKkAC4iIlKAFMBFREQKkAK4iIhIAVIAFxERKUAK4CIiIgVIAVxERKQAKYCLiIgUIAVwERGRAqQALiIiUoAUwEVERAqQAriIiEgBUgAXEREpQArgIiIiBUgBXEREpAApgIuIiBQgBXAREZECpAAuIiJSgBTARURECpACuIiISAFSABcRESlACuAiIiIFSAFcRESkACmAi4iIFCAFcBERkQKkAC4iIlKAFMBFREQKkAK4iIhIAVIAFxERKUAK4CIiIgVIAVxERKQAKYCLiIgUIAVwERGRAqQALiIiUoAUwEVERAqQAriIiEgBUgAXEREpQArgIiIiBUgBXEREpAApgIuIiBQgBXAREZECpAAuIiJSgBTARURECpACuIiISAFSABcRESlACuAiIiIFSAH8/2+vDkgAAAAABP1/3Y5ATwgAQwIHgCGBA8CQwAFgSOAAMCRwABgSOAAMCRwAhgQOAEMCB4AhgQPAkMABYEjgADAkcAAYEjgADAkcAIYEDgBDAgeAIYEDwJDAAWBI4AAwJHAAGBI4AAwJHACGBA4AQwIHgCGBA8CQwAFgSOAAMCRwABgSOAAMCRwAhgQOAEMBAix7XtF5GeQAAAAASUVORK5CYII=" alt></p>
+
+      </div>
+      <div class="md-sidebar-toc"><ul>
+<li><a href="#unit-07-%E6%9C%8D%E5%8B%99service%E8%88%87%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5dependency-injection">Unit 07 &#x670D;&#x52D9;(Service)&#x8207;&#x4F9D;&#x8CF4;&#x6CE8;&#x5165;(Dependency Injection)</a>
+<ul>
+<li><a href="#%E6%9C%8D%E5%8B%99service%E8%88%87%E6%9C%8D%E5%8B%99%E6%B3%A8%E5%85%A5%E5%99%A8injector">&#x670D;&#x52D9;(Service)&#x8207;&#x670D;&#x52D9;&#x6CE8;&#x5165;&#x5668;(Injector)</a>
+<ul>
+<li><a href="#%E6%9C%8D%E5%8B%99service">&#x670D;&#x52D9;(Service)</a></li>
+<li><a href="#%E6%B3%A8%E5%85%A5%E5%99%A8injector">&#x6CE8;&#x5165;&#x5668;(Injector)</a></li>
+<li><a href="#%E5%90%91%E6%B3%A8%E5%85%A5%E5%99%A8%E8%A8%BB%E5%86%8A%E6%9C%8D%E5%8B%99">&#x5411;&#x6CE8;&#x5165;&#x5668;&#x8A3B;&#x518A;&#x670D;&#x52D9;</a>
+<ul>
+<li><a href="#moduleinjector">ModuleInjector</a></li>
+<li><a href="#elementinjector">ElementInjector</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%8D%E5%8B%99%E5%AF%A6%E9%AB%94%E7%9A%84%E6%B3%A8%E5%85%A5%E9%BB%9E">&#x670D;&#x52D9;&#x5BE6;&#x9AD4;&#x7684;&#x6CE8;&#x5165;&#x9EDE;</a></li>
+</ul>
+</li>
+<li><a href="#%E9%9C%80%E6%B1%82">&#x9700;&#x6C42;</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C">&#x5BE6;&#x4F5C;</a>
+<ul>
+<li><a href="#%E5%BB%BA%E7%AB%8B-stock-service">&#x5EFA;&#x7ACB; <code>Stock</code> Service:</a></li>
+<li><a href="#%E5%9C%A8-stocklist-%E5%85%83%E4%BB%B6%E4%B8%AD%E6%B3%A8%E5%85%A5-stockservice-%E6%9C%8D%E5%8B%99">&#x5728; StockList &#x5143;&#x4EF6;&#x4E2D;&#x6CE8;&#x5165; StockService &#x670D;&#x52D9;</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9-stocklist-%E5%85%83%E4%BB%B6%E7%9A%84%E6%A8%A3%E7%89%88-%E4%BB%A5%E9%A1%AF%E7%A4%BAstockservice-%E6%9C%8D%E5%8B%99%E6%8F%90%E4%BE%9B%E7%9A%84%E8%82%A1%E7%A5%A8%E8%B3%87%E6%96%99">&#x4FEE;&#x6539; StockList &#x5143;&#x4EF6;&#x7684;&#x6A23;&#x7248;, &#x4EE5;&#x986F;&#x793A;<code>StockService</code> &#x670D;&#x52D9;&#x63D0;&#x4F9B;&#x7684;&#x80A1;&#x7968;&#x8CC7;&#x6599;</a></li>
+<li><a href="#%E5%9F%B7%E8%A1%8C%E7%B5%90%E6%9E%9C">&#x57F7;&#x884C;&#x7D50;&#x679C;</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+      <a id="sidebar-toc-btn">&#x2261;</a>
+    
+    
+    
+    
+    
+    
+    
+    
+<script>
+document.body.setAttribute('html-show-sidebar-toc', true)
+var sidebarTOCBtn = document.getElementById('sidebar-toc-btn')
+sidebarTOCBtn.addEventListener('click', function(event) {
+  event.stopPropagation()
+  if (document.body.hasAttribute('html-show-sidebar-toc')) {
+    document.body.removeAttribute('html-show-sidebar-toc')
+  } else {
+    document.body.setAttribute('html-show-sidebar-toc', true)
+  }
+})
+</script>
+      
+  
+    </body></html>
