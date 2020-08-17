@@ -26,13 +26,23 @@
     - 取得傳入之參數(Query Parameters)
 
 
-Unit 06 Angular MVC 模式: 建立 model
+[Unit 06 Angular MVC 模式: 建立 model](./u06-domain_model_class.md)
     - 建立股票模型
   
 ![](css/sy-i01.png)
 
-Unit 07 Service 
+[Unit 07 Service ](./u07-service.md)
     - 提供股票資料
+    - 產生 Injectable Service
+    - 注入器與注入器的層級
+    - 使用服務提供者(Service Provider)設罝注入器
 
 
-Unit 0X 表單(template driven form)
+[Unit 08 在元件內使用其它元件顯示資料: 父、子元件的溝通](./08-components_inputs_outputs.md)
+    - UI 開發元件化
+    - 由父元件輸入資料到子元件
+    - 子元件輸出事件, 由父元件處理
+
+
+
+[Unit 09 範本驅動式表單(template driven form)](./u09-template_driven_form.md)
