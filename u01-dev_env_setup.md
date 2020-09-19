@@ -1,19 +1,6 @@
----
-html:
-  embed_local_images: true
-  embed_svg: true
-  offline: false
-  toc: true
-export_on_save:
-    html: true
----
-
-@import "./css/article_01.css"
-
 # Unit 01 Angular 開發環境設置
 
-## References
-- [Angular 正體中文版線上說明](https://angular.tw/)
+本單元內容主要參考 [Angular 正體中文版線上說明](https://angular.tw/)。
 
 ## 安裝 Node, npm, 及 angular 
 
