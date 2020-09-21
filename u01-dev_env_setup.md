@@ -1,3 +1,6 @@
+[![hackmd-github-sync-badge](https://hackmd.io/7Y4ny10iQIaDl8TLCMmK5g/badge)](https://hackmd.io/7Y4ny10iQIaDl8TLCMmK5g)
+###### tags: 'Angular 教學'
+
 # Unit 01 Angular 開發環境設置
 
 本單元內容主要參考 [Angular 正體中文版線上說明](https://angular.tw/)。
