@@ -1,26 +1,18 @@
----
-html:
-  embed_local_images: true
-  embed_svg: true
-  offline: false
-  toc: true
-export_on_save:
-    html: true
----
-
-
-@import "./css/article_01.css"
+###### tags: `Angular 教學`
 
 # Unit 02 使用 CLI 建立第一個 Angular 專案
                                  
 
 ## 編譯及打包專案
 
-開啓命令視窗, 切換到專案目錄下, 輸入 `ng serve --open` 指令:
+開啓命令視窗。可以使用 Windows PowerShell 或者 Linux like 的命令視窗，如: Git Bash、或者 [Cygwin](https://www.cygwin.com/) 。
+
+切換到專案目錄，輸入 `ng serve --open` 指令:
 
 ![](img/u02-i01.png)
 
-`ng serve --open` 指令啓動 build 程序, Angular CLI 就會幫我們處理以下這幾件事情：
+
+接著, `ng serve --open` 指令啓動 build 程序, Angular CLI 就會幫我們處理以下這幾件事情：
 
 - 啟動本地端的 Web-Server，令我們能夠在 localhost:4200 上看到我們的頁面。
 - 將我們目前所開發的程式碼（已儲存的）編譯、打包後，讓 localhost:4200 載入. 
