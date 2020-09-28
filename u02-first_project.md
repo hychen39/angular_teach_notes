@@ -157,7 +157,7 @@ this.previousPrice = 80;
 
 ## 將元件特性顯示在元件樣版上: 使用 data binding `{{}}` 符號
 
-開啟 `src\app\stock\stock-item\stock-item.component.css`
+開啟 `src\app\stock\stock-item\stock-item.component.html`
 
 輸入以下的程式碼:
 ```
@@ -171,7 +171,7 @@ this.previousPrice = 80;
 
 **插值(Interpolation) {{...}}**
 
-[插值(Interpolation) {{...}}](https://angular.tw/guide/template-syntax#interpolation-) 是元件與樣板見 data binding 的方法之一. 
+[插值(Interpolation) {{...}}](https://angular.tw/guide/template-syntax#interpolation-) 是元件與樣板間 data binding 的方法之一. 
 
 所謂 "插值" 是指將表示式嵌入到標記文字中, 通常用來顯示元件的特性到其樣板中.
 
@@ -180,11 +180,12 @@ this.previousPrice = 80;
 
 開啓 `src\app\app.component.html`, 加入 `app-stock-item` tag
 
-```
+```xml
 <div style="text-align:center">
   <h1>
     Welcome to {{ title }}!
   </h1>
+  <!-- 元件的標記 -->
   <app-stock-item></app-stock-item>
 </div>
 ```
@@ -202,6 +203,22 @@ this.previousPrice = 80;
 
 開啟 `src\app\stock\stock-item\stock-item.component.css`, 新增元件樣版中使用的樣式: `stock-container`, `name`, 及 `price`:
 
+```css
+.stock-container {
+    border: 1px solid black;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.stock-container .name h3, .stock-container .name h4 {
+    display: inline-block;
+}
+
+.price {
+    font-weight: bolder;
+}
+```
 
 執行 
 ```
