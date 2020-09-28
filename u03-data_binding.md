@@ -1,23 +1,10 @@
----
-html:
-  embed_local_images: true
-  embed_svg: true
-  offline: false
-  toc: true
-export_on_save:
-    html: true
----
-
-
-@import "./css/article_01.css"
-
 # Unit 03 對 DOM 元素的特性(property)及事件(event)進行資料連結
 
-將説明如何將樣板中的屬性與元件的特性連結在一起, 讓我們可以動態的控制 DOM 元素的屬性值. 
+將説明如何將樣板中的 DOM 元素特性(property)與元件的特性(property)連結在一起, 讓我們可以動態的控制 DOM 元素的屬性值。改變元件的特性值, 就改變 HTML 元素特性值。
 
-另外, 也將説明如何連結 DOM 元素的事件及原件的方法, 使得觸發事件(例如 click event)時, 執行元件的方法.
+另外, 也將説明如何連結 DOM 元素的事件及元件的方法(method), 使得觸發事件(例如 click event)時, 執行元件的方法.
 
-延續使用先前的專案.
+延續 Unit02 使用的專案進行練習。
 
 
 ## DOM 元素的特性的 data binding
@@ -47,8 +34,9 @@ export_on_save:
 新增元件特性 `public positiveChange: boolean`. 
 此特性的資料型態為 boolean 值。
 
+
 在 `ngOnInit()` 中初始化特性值
-```
+```js
 this.positiveChange = this.price >= this.previousPrice;
 ```
 
@@ -58,7 +46,7 @@ this.positiveChange = this.price >= this.previousPrice;
 
 對 DOM 元素中具有 set 能力的特性, 使用中括號 `[]` 標示目標特性(target property), Angular 會將指派符號(=)右手的元件的特性值指派到目標特性。
 
-`[]` 可以連結元件特性到任何的可指派的 DOM 元素的特性。
+`[]` 可以連結元件特性到任何的可指派值的 DOM 元素的特性。
 
 語法為:
 ```
@@ -70,7 +58,7 @@ this.positiveChange = this.price >= this.previousPrice;
 - 執行範本表示式時, 表示式的[變數範圍(Expression Context)](https://angular.tw/guide/template-syntax#expression-context)只限於該元件的特性，不能使用其它元件的特性。
 
 
-#### 屬性(Attribute)與特性(Property)
+#### HTML 元素的屬性(Attribute)與 DOM 元素的特性(Property)
 
 - Attribute，是由HTML來定義的(這裡指的是HTML標籤內的屬性)，一般來說它的值應該都為字串。
 - Property，是由 DOM (Document Object Model)所定義的，通常都使用JavaScript來控制它。
@@ -103,7 +91,7 @@ Ref:
 - [[Angular學習紀錄] Template binding property or attribute?](https://lawrencetech.blogspot.com/2017/05/angular-template-binding-property-or.html)
 
 
-#### Class binding
+#### Class binding (樣式類別綁定)
 
 我們時常要動態控制元素的樣式, Class binding 可以幫助我們。
 
@@ -141,6 +129,13 @@ Angular 會評算範本表示式中的運算式, 此例的運算式回傳結果�
 
 此種方式稱為 [「單類別繫結(Single class binding)」](https://angular.tw/guide/template-syntax#class-binding)。若範本表示式評算結果為 true, 則套用 `class.user_class_name` 中的 `user_class_name` class 到元素中。
 
+前述的寫法, 當為運算式結果為真時, 相當於以下的 DOM 操作
+
+
+```js
+document.getElementsByClassName('price')[0].classList.add("positive");
+```
+
 「多類別連結 (Multi-class binding)」可以一次對元素套用多個樣式名稱。
 前一個例子如果使用 `[ngClass]` directive 可以改寫成:
 
@@ -157,6 +152,11 @@ Note, for Angular 10, we can use:
  <div [class]="{price: true, positive: this.positiveChange, negative: !this.positiveChange}"
     > ${{price}}</div>
 ```
+不需要再使用 `[ngClass]` directive。
+
+
+Angular [屬性型指令 Attribute Directive](https://angular.tw/guide/attribute-directives) 用於 HTML 元素的屬性上, 用來更改 DOM 元素的外觀或行為。
+
 
 ## DOM 元件的事件的 Data Binding: 使用事件繫結(Event Binding) 
 

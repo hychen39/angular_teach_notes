@@ -1,6 +1,6 @@
 # Angular 教學講議
 
-Angular 教學講議
+Angular 教學講義
 
 [課程大綱](./Syllabus.md)
 
