@@ -95,6 +95,11 @@ Ref:
 
 我們時常要動態控制元素的樣式, Class binding 可以幫助我們。
 
+在 HTML 元素的 `class` 屬性套用中括號`[]`, 語法為：
+```
+[class]="templat_expression"
+```
+
 例如, 連結元素的 `class` 特性至元件的特性:
 
 ```
@@ -116,47 +121,60 @@ Angular 會評算範本表示式中的運算式, 此例的運算式回傳結果�
 
 把前述範例的程式碼加入 `src\app\stock\stock-item\stock-item.component.html`中。
 
-注意, 使用 `[class]` 連結元素的 class 特性時, 會覆寫目前的特性值。例如, 使用套用的 `price` CSS class 已被覆寫. 
 
-若要避免未連結的 class 被覆寫, 可改寫成:
+~~注意, 使用 `[class]` 連結元素的 class 特性時, 會覆寫目前的特性值。例如, 使用套用的 `price` CSS class 已被覆寫. ~~
 
+~~若要避免未連結的 class 被覆寫, 可改寫成:~~
+
+##### 「單類別繫結(Single class binding)」
+
+一次設定一個 CSS Class 的名稱。語法為：
 ```
+[class.your_class_name]="true|false"
+```
+若範本表示式的評算結果為 `true`, 則加入 `your_class_name` ；反之，移除此 class name。
+
+例如
+```html
 <div class="price" 
     [class.positive] = "this.positiveChange"
     [class.negative] = "!this.positiveChange"
     > ${{price}}</div>
 ```
 
-此種方式稱為 [「單類別繫結(Single class binding)」](https://angular.tw/guide/template-syntax#class-binding)。若範本表示式評算結果為 true, 則套用 `class.user_class_name` 中的 `user_class_name` class 到元素中。
+此種方式稱為 [「單類別繫結(Single class binding)」](https://angular.tw/guide/template-syntax#class-binding)。
 
 前述的寫法, 當為運算式結果為真時, 相當於以下的 DOM 操作
-
 
 ```js
 document.getElementsByClassName('price')[0].classList.add("positive");
 ```
 
+##### 「多類別連結 (Multi-class binding)」
+
 「多類別連結 (Multi-class binding)」可以一次對元素套用多個樣式名稱。
-前一個例子如果使用 `[ngClass]` directive 可以改寫成:
+在範本表示式提供 `{key:value [, key:value] }` 的集合。`key` 欄位表示 CSS Class 名稱，`value` 欄位為 template expression, 回傳 ture/false。 若 `value` 欄位的值為 `true`, 則相對應的 `key` 欄位的 CSS Class 會被加入，反之，則被移除。
 
-Angular 8
+前一個例子如果使用 `[class]`  可以改寫成:
 
+```html
+<div [class]="{positive: this.positiveChange, 
+               negative: !this.positiveChange}"> 
+    ${{price}}
+</div>
 ```
- <div [ngClass]="{price: true, positive: this.positiveChange, negative: !this.positiveChange}"
-    > ${{price}}</div>
+
+注意，若是 Angular 8 之前的版本，要使用 `ngClass` 指令：
+
+```html
+<div [ngClass]="{price: true, positive: this.positiveChange, negative: !this.positiveChange}"> 
+    ${{price}}
+</div>
 ```
 
-Note, for Angular 10, we can use:
+`ngClass` 指令為一種 Angular [屬性型指令 Attribute Directive](https://angular.tw/guide/attribute-directives) 用於 HTML 元素的屬性上, 用來更改 DOM 元素的外觀或行為。
 
-```
- <div [class]="{price: true, positive: this.positiveChange, negative: !this.positiveChange}"
-    > ${{price}}</div>
-```
-不需要再使用 `[ngClass]` directive。
-
-
-Angular [屬性型指令 Attribute Directive](https://angular.tw/guide/attribute-directives) 用於 HTML 元素的屬性上, 用來更改 DOM 元素的外觀或行為。
-
+官方文件，參考： [attribute、class 和 style 繫結 @ Angular](https://angular.tw/guide/template-syntax#attribute-class-and-style-bindings)
 
 ## DOM 元件的事件的 Data Binding: 使用事件繫結(Event Binding) 
 
