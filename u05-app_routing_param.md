@@ -21,7 +21,7 @@ export_on_save:
 
 `http://host:8080/#/stock-detail/100`
 
-## Upgrading to Angular 9
+## Upgrading to Angular 9 (Optional)
 
 Update Globally
 ```
@@ -83,9 +83,10 @@ ng g c stock/stock-details --module=app
 
 
 修改`stock/stock-details`的樣版(template)。
+
 開啟 `src\app\stock\stock-details\stock-details.component.html`, 加入:
 
-```
+```html
 The product id is {{this.productId}}.
 ```
 
@@ -103,17 +104,27 @@ export class StockDetailsComponent implements OnInit {
 
 ### 在元件中注入(Inject) ActivatedRoute 物件
 
-[`ActivatedRoute` 提供導向到目的元件的路徑資訊](https://v9.angular.io/api/router/ActivatedRoute)。
+#### ActivatedRoute 物件的 snapshot 屬性
 
-在此 `ActivatedRoute` 物件中, [`snapshot: ActivatedRouteSnapshot`](https://angular.tw/api/router/ActivatedRouteSnapshot#activatedroutesnapshot) 特性及 `paramMap: Observable<ParamMap>` 可以讓我們取得傳遞參數。
+點擊連結產生導向的資訊可從 `ActivatedRoute` 物件取得。[`ActivatedRoute`](https://v9.angular.io/api/router/ActivatedRoute)提供導向到目的元件的路徑資訊。
 
-Angular 對導向到此元件的路徑組成進行快照, 說明了路徑和元件間的對應關係, 產生了目前可見的畫面。(Ref: [Angular Router: Understanding Router State](https://vsavkin.com/angular-router-understanding-router-state-7b5b95a12eab))。 例如: 路徑 `http://localhost:4200/stock/detail/100` 導向到 `stock-details` 元件, 該元件的路徑節段(segment)為 `stock/detail`(自行設定的路徑節段)對應到 `stock-details` 元件, `/100` 為傳遞給此元件的查詢參數。而路徑 `/` 則對應到 `app` 元件。
+`ActivatedRoute` 物件的[`snapshot:ActivatedRouteSnapshot`](https://angular.tw/api/router/ActivatedRouteSnapshot#activatedroutesnapshot) 及 `paramMap: Observable<ParamMap>` 特性可以讓我們取得傳遞參數。
 
-此快照是不可改變的資料結構(immutable structure), 導向到此元件後, 就無法修改快照內的資料, 此也稱為靜態的路由器(Static Router State)狀態。只有當路徑中的元件的組成結構改變時, Angular 才會對 Route 的進行另一次的快照。但是, 只改變傳遞參數並不會改變路徑結構。這是路徑快照的重要特性。
+在此只介紹 `snapshot` 屬性。
 
-要從 `snapshot: ActivatedRouteSnapshot` 中取得參數, 步驟如下:
+Angular 對導向到此元件的路徑組成進行快照， 並放在 `ActivatedRoute` 物件的 `snapshot` 屬性中。 
+- 快照內容說明導向到此畫面的路徑和元件間的對應關係。(Ref: [Angular Router: Understanding Router State](https://vsavkin.com/angular-router-understanding-router-state-7b5b95a12eab))。 
+- 例如: 路徑 `http://localhost:4200/stock/detail/100` 導向到 `stock-details` 元件, 該元件的路徑節段(segment)為 `stock/detail`(自行設定的路徑節段)對應到 `stock-details` 元件, `/100` 為傳遞給此元件的查詢參數。而路徑 `/` 則對應到 `app` 元件。
+
+此快照是不可改變的資料結構(immutable structure), 導向到此元件後, 就無法修改快照內的資料, 此也稱為靜態的路由器(Static Router State)狀態。
+
+只有當路徑中的元件的組成結構改變時, Angular 才會對 Route 的進行另一次的快照。但是, 只改變傳遞參數並不會改變路徑結構, 這是路徑快照的重要特性。之後，會針對此特性加以說明。
+
+#### 取得路徑參數的步驟
+
+要從 `snapshot:ActivatedRouteSnapshot` 中取得參數, 步驟如下:
 1. 注入 `ActivatedRoute` 物件到元件中
-2. 在元件被載入時，取得`ActivatedRoute` 物件的查詢參數, 接著儲存到元件特性中供後續使用。
+2. 在元件被載入時，取得`ActivatedRoute` 物件的 `snapshot` 屬性，並從中取得查詢參數, 接著將查詢參數儲存到元件特性中供後續使用。
 
 `StockDetailsComponent` 元件完整的程式碼:
 ```typescript
@@ -141,7 +152,7 @@ export class StockDetailsComponent implements OnInit {
 ```
 ### 增加 Stock-Details 元件的導向路徑到 `app-routes` 模組中
 
-開啟 `src\app\app-routes.module.ts`:
+開啟 `src\app\app-routes.module.ts`，將 `Stock-Details` 元件的導向路徑 `stock/detail/:id` 加入到 `appRoutes` 常數中。路徑中的參數名稱前使用冒號`:`標示。
 
 ```typescript
 const appRoutes: Routes = [
@@ -152,12 +163,17 @@ const appRoutes: Routes = [
   {path: '', redirectTo: 'stock/stock-list', pathMatch:'full'}]
 ```
 
-注意, 路徑中的參數名稱前使用冒號`:`, 以利區隔。
-
 完成後的成果:
 
 ![](img/u05-i02.gif)
 
+
+## 回顧
+
+- 使用 `ActivatedRouted` 取得導向時的路徑及參數資訊。
+- 使用時，將 `ActivatedRouted` 物件注入元件中，注入點在類別的建構子(constructor)
+- `ActivatedRouted` 物件的 `snapshot` 特性儲存導向的快照。`snapshot.paramMap` 儲存路徑上的參數
+- 導向路徑的結構為： `http://host/path_to_component/:parameter[/:parameter]`.
 
 
 

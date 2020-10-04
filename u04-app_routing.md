@@ -43,6 +43,7 @@ ng g c stock/create-stock
 
 ### 匯入導向模組
 
+新增一個模組到應用程式中：
 ```
 ng g module app-routes --flat --module=app
 ```
@@ -67,7 +68,9 @@ Ref: [NgModule metadata | Angular](https://angular.tw/guide/architecture-modules
 
 ### 設定各元件的路徑
 
-`app-routes` 模組是我們新增的模組. Angular 的導向模組 `RouterModule` 將被匯入到此並進行被始化設定。
+`app-routes` 模組是我們新增的模組。我們會在此模組中匯入  `@angular/router` 套件中的 `RouteModule` 及 `Routes` 類別，使用這兩個類別進行導向。
+
+<!-- Angular 的導向模組 `RouterModule` 將被匯入到此並進行被始化設定。 -->
 
 各元件的路徑規劃如下:
 - `/`: 預設為顯示 stock list
@@ -75,12 +78,13 @@ Ref: [NgModule metadata | Angular](https://angular.tw/guide/architecture-modules
 - `stock/create`: 顯示 stock 建立表單
 
 
-開啟 `src\app\app-routes.module.ts`, 從 `@angular/router` 套件匯入 `RouterModule` 類別及 `Routes` 型態:
+#### 匯入 `RouterModule` 類別及 `Routes` 類別及設定元件導向路徑
+
+開啟 `src\app\app-routes.module.ts`, 從 `@angular/router` 套件匯入 `RouterModule` 類別及 `Routes` 類別:
 
 ```js
 import {RouterModule, Routes} from '@angular/router';
 ```
-
 
 
 同樣在 `src\app\app-routes.module.ts` 輸入以下程式碼, 定義一個 `appRoutes` 的常數，資料型態為 `Routes`:
@@ -124,9 +128,10 @@ interface Route {
 }
 ```
 
-這裡使用三個重要的欄位:
+這裡使用到的幾個欄位的說明:
 - `path?`: The path to match against. A URL string that uses router matching notation. Default is "/" (the root path).
 - `pathMatch?`: The path-matching strategy, one of 'prefix' or 'full'. Default is 'prefix'.
+  -  prefix match example: '/team/11/user' matches 'team/:id'.
 - `redirectTo?`: A URL to redirect to when the path matches.
 - `component?`: The component to instantiate when the path matches.
 
@@ -140,9 +145,9 @@ interface Route {
 
 ![](img/u04-i06.png)
 
-Line #18: 在 `app-routes` 模組中匯入 `RouterModule`, 並提供先前定義的 `appRoutes` 路徑配置做為啟動的選項。
-
-Line #21 從`app-routes` 模組中匯出 `RouterModule` 模組, 供其它的元件使用先前定義路徑配置。
+在 `src\app\app-routes.module.ts` 中：
+- Line #18: 在 `app-routes` 模組中匯入 `RouterModule`, 並提供先前定義的 `appRoutes` 路徑配置做為啟動的選項。
+- Line #21 從`app-routes` 模組中匯出 `RouterModule` 模組, 供其它的元件使用先前定義路徑配置。
 
 
 ### 在要導向結果的元件樣版處, 加入 `<router-outlet>` 做為導向的出口。
@@ -208,6 +213,17 @@ router.navigate(['team', 33, 'user', 11]);
 實作的結果如下:
 ![](img/u04-i10.png) 
 
+## 回顧
+- 在應用程式中，增加第二個模組，負責導向功能。
+  - 第二個模組要匯入主要模組中，主要模組才能使用第二個模組中定義的類別。
+- 使用 `@angular/route` 套件中的 `RouteModule`， `Routes` 及 `Route` 類別進行導向
+- 使用 `RouteModule` 的步驟：
+  1. 建立一個 `Routes` 物件，是一個 `Route` 物件的集合。`Route` 物件的內容為元件的導向路徑及對應的元件名稱。
+  2. 初始化 `RouteModule` 物件，需提供 `Routes` 物件。`RouteModule` 物件才能依路徑，導向到不同的元件。
+  3. 在導向出口的元件樣板，加入 `<router-outlet>`, 導向目的元件的樣板會顯示在此。
+- 導向的方式可使用靜態或程式導向。
+- 靜態導向在`<a>` 元素中使用 `routerLink` 屬性；使用 `routerLinkActive` 設定點選時的樣式。
+- 動態導向要注入 `Router` service, 使用 `router.navigate()` 方法進行導向。
 
 ## References
 
