@@ -49,3 +49,14 @@
 
 
 [Unit 10 範本驅動表單驗證](./u10-form_validation.md)
+
+[Unit 11 RxJS (1): Observable, Observer, and Subscriber (TBD)]
+
+[Unit 12 與 Server 互動: 使用 HTTP (TBD) ]
+- HttpClient Service
+- Read data from the server
+- Post data to the server
+
+[Unit 13 在導向中使用 Observables 及導向到子元件的 `<router-outlet>` (TBD)]
+- Observables and the router (Section 6.6)
+- Child route (Section 3.6)
