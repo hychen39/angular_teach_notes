@@ -32,7 +32,7 @@ Angular 使用 `AppRoutingModule` 模組進行元件的路徑(route)設定及導
 建立以下兩個元件:
 ```
 ng g c stock/stock-list
-ng g c stock/create-stock
+ng g c stock/stock-create
 ```
 
 `stock-lisk` 顯示股票清單; `create-stock` 建立股票資料

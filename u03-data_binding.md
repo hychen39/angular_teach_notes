@@ -243,4 +243,4 @@ toggleColor() {
 ## 總結
 
 1. 使用 `[target_property]="template_expression"` 對 DOM 元素的特性進行資料繫結, 運算方向為由右至左, One-Way In.
-2. 使用 `[target_event_name]="template_expression"` 對 DOM 元素的event 進行資料繫結, 運算方向為由左至右, One-Way Out.
+2. 使用 `(target_event_name)="template_expression"` 對 DOM 元素的event 進行資料繫結, 運算方向為由左至右, One-Way Out.
