@@ -28,8 +28,6 @@
 
 [Unit 06 Angular MVC 模式: 建立 model](./u06-domain_model_class.md)
     - 建立股票模型
-  
-![](img/sy-i01.png)
 
 [Unit 07 Service ](./u07-service.md)
     - 提供股票資料

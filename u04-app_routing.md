@@ -41,7 +41,7 @@ ng g c stock/stock-create
 
 ![](img/u04-i02.png)
 
-### 匯入導向模組
+### 建立導向模組
 
 新增一個模組到應用程式中：
 ```
