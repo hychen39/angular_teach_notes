@@ -24,6 +24,7 @@ Stock List 中的股票顯示方式要改成 Stock Item 的顯示方式:
 ![](img/u08-i03.png)
 
 另外, 點擊 "Toggle the price color" 按鈕時, 會累計總次數。
+
 ## 由父元件輸入資料到子元件
 
 元件的類別欄位(class field)加上[@input 修飾器](https://angular.io/api/core/Input)後, 便可成為輸入特性(input property) , [透過資料繫結(data binding)把資料從父元件傳到子元件](https://angular.tw/guide/component-interaction#pass-data-from-parent-to-child-with-input-binding)
