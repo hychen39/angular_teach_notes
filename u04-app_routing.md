@@ -49,8 +49,8 @@ ng g module app-routes --flat --module=app
 ```
 
 參數說明:
-`--flag` : 在目前專案根目錄的頂層建立新文件。
-`--module=app`: 將 `app-routes` 模組加入 `app` 模組中. 即, 在 `app` 模組中匯入 `app-routes` 模組。
+- `--flag` : 在目前專案根目錄的頂層建立新文件。
+- `--module=app`: 將 `app-routes` 模組加入 `app` 模組中. 即, 在 `app` 模組中匯入 `app-routes` 模組。
 
 新增的 `app-routes` 模組:
 ![](img/u04-i03.png)
@@ -208,9 +208,11 @@ navToList(){
 ```
 router.navigate(['team', 33, 'user', 11]);
 ```
+
 的導向路徑為: `team/33/user/11`.
 
 實作的結果如下:
+
 ![](img/u04-i10.png) 
 
 ## 回顧
