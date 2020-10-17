@@ -187,6 +187,7 @@ interface Route {
 
 ### 使用程式導向
 
+
 使用 [`Router` service](https://angular.tw/api/router/Router#router) 在程式中進行導向。
 
 在建構子中注入 `Router` service:
@@ -210,6 +211,12 @@ router.navigate(['team', 33, 'user', 11]);
 ```
 
 的導向路徑為: `team/33/user/11`.
+
+完成導向方法的建立後, 加入 `<button>` 至 `app` 元件的樣版 `src\app\app.component.html` 中:
+
+```html
+ <button (click)="this.navToList()">Stock List | </button>
+```
 
 實作的結果如下:
 

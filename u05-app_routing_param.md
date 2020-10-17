@@ -157,6 +157,17 @@ const appRoutes: Routes = [
   {path: '', redirectTo: 'stock/stock-list', pathMatch:'full'}]
 ```
 
+### 增加 Stock-Details 元件的靜態導向連結
+
+開啟 `stock-list`元件的 view: `src\app\stock\stock-list\stock-list.component.html`, 加入以下的連結:
+
+```html
+<ul style="list-style-type: none;">
+    <li><a routerLink="/stock/detail/100">100 TSC</a></li>
+    <li> <a [routerLink]="['/stock/detail', 200]">200 AIG</a> </li>
+</ul>
+```
+
 完成後的成果:
 
 ![](img/u05-i02.gif)
