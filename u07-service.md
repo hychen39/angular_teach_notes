@@ -12,7 +12,7 @@ Angular 使用依賴注入(Dependency Injection)的方式, 提供服務物件給
 
 例如: 使用 [Router Service](https://angular.io/api/router) 導向到不同的元件; 使用 [HTTP Service](https://angular.io/guide/http) 向後端伺服器存取資料。
 
-### 注入器(Injector)
+### 注入器(Injector)及其階層性
 
 Angular 的注入器(Injector)負責服務注入的工作。注入器由 Angular 管理, Developer 不需要介入 Injector 的產生或執行。
 
@@ -22,7 +22,9 @@ Developer 只需告知 Injector 那些服務需要被注入。Developer 不用�
 
 Angular 的注入器有兩個層級: Module 及 Element level. 
 
-Module Level 的注入器為 [ModuleInjector](https://angular.tw/guide/hierarchical-dependency-injection#moduleinjector), 每一個模組擁有一個 ModuleInjector. Element Level 的注入器為 [ElementInjector], Angular 會為每個 DOM 元素自動建立 ElementInjector。
+Module Level 的注入器為 [ModuleInjector](https://angular.tw/guide/hierarchical-dependency-injection#moduleinjector), 每一個模組擁有一個 ModuleInjector。 
+
+Element Level 的注入器為 [ElementInjector](https://angular.tw/guide/hierarchical-dependency-injection#two-injector-hierarchies), Angular 會為每個 DOM 元素自動建立 ElementInjector。
 
 
 階層式的注入器可依元件的需求注入更明確的服務。
@@ -34,9 +36,9 @@ Module Level 的注入器為 [ModuleInjector](https://angular.tw/guide/hierarchi
 ![](https://angular.tw/generated/images/guide/dependency-injection/car-components.png)
 
 
-假設你在根注入器(代號 A)中配置了通用的服務提供者(provider): `CarService`, `EngineService` 和 `TiresService`.
+假設在根注入器(代號 A)中配置了通用的服務提供者(provider): `CarService`, `EngineService` 和 `TiresService`.
 
-你建立了一個車輛元件 A，使用了先前三個通用服務構造出的元件。
+現在用先前三個通用服務建立了一個車輛元件 A。
 
 然後，在元件 A 中再建立一個子元件 B，它為 `CarService`,  和 `EngineService` 定義了自己特有的提供者: `CarService2` 及 `EngineService2`，它們具有適用於元件 B 的特有能力。
 
@@ -73,14 +75,14 @@ export class ItemService {
 
 可以在 Angular 專案的 `main.ts` 中找到啟動模組, 名稱通常為 `AppModule`。
 
-或者, 想要此服務使用特定模組的注入器, 如 `UserModule` 的注入器，則:
+或者, 想要此服務使用特定模組的注入器, 如 `UserModule` 的注入器(`UserModule` 為自訂的模組名稱)，則:
 
 ```typescript
 import { Injectable } from '@angular/core';
 import { UserModule } from './user.module';
 
 @Injectable({
-  providedIn: 'UserModule'  // <--provides this service in the root ModuleInjector
+  providedIn: 'UserModule'  // <--provides this service in your UserModule ModuleInjector
 })
 export class ItemService {
   name = 'telephone';
@@ -109,6 +111,7 @@ export class ItemService {
   name = 'telephone';
 }
 ```
+
 那麼, 可以在 `AppModule` 中使用 `providers` 特性:
 ```typescript
 import {ItemService} from 'services/ItemService.ts'
@@ -321,3 +324,14 @@ let 關鍵字宣告範本輸入變數(template input variable), 可以在範本�
 ### 執行結果
 
 ![](img/u07-i01.png)
+
+## 回顧
+
+- 服務用來封裝商業邏輯(Business Logic)或者資料存取邏輯(Data Access Logic).
+- Angular 使用依賴注入(Dependency Injection)的方式, 提供服務物件給需要的元件(Component)或其它服務(Service)
+- Angular 的注入器有兩個層級: Module 及 Element level.
+- 每個服務必須指定要使用的注入器, 可向 Module 或者 Component 的注入器註冊。
+- 服務向注入器註冊的方法:
+  - 方法 1: 在可注入服務(injectable service)中指定特定模組的注入器, 使用裝飾器的 `providedIn` 屬性
+  - 方法 2: 在特定模組中提供可注入服務的名稱, 使用裝飾器的 `provider` 屬性。
+- 在樣板中使用 `*ngFor` 指令(directive)產生重覆的 HTML 結構:
