@@ -12,6 +12,7 @@ Angular 教學講義
 
 - [Angular 目錄 | Jonny Huang 的學習筆記](https://jonny-huang.github.io/angular/)
 - [風格指南 | Angular](https://angular.tw/guide/styleguide)
+- [Angular Ivy](https://indepth.dev/a-gentle-introduction-into-tree-shaking-in-angular-ivy/): 解釋 Ivy 的 Tree-Shacking 功能。
 
 ### TypeScript
 
