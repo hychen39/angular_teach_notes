@@ -39,14 +39,17 @@ export class StockItemComponent implements OnInit {
   ...
 ```
 
-在 `StockList` 元件的模版中使用 `StockItem` 的元件，`StockList` 為 `StockItem` 的子元件。
+在 `StockList` 元件的模版中使用 `StockItem` 的元件，`StockList` 為 `StockItem` 的父元件。
 `<app-stock-item [stock]="stockObj">` 中的 `[stock]` 是指 `StockItem` 內的 `stock` 輸入特性; `stockObj`是父元件模版中的區域變數。
 
+
 ```html
+<!-- Template for the StockList component -->
 <p>stock-list works!</p>
 ...
 
 <div *ngFor="let stockObj of getStocks()">
+  <!-- Child component template of the StockList component -->
     <app-stock-item [stock]="stockObj">
     </app-stock-item>
 </div>
@@ -73,7 +76,7 @@ export class StockItemComponent implements OnInit {
 
 完成元件的輸出特性的宣告後, 在 `constructor()` 內初始化此輸出特性, 使之指向一個 `EventEmitter<number>` 類別實體。
 
-```
+```typescript
 export class StockItemComponent implements OnInit {
 
   ...
@@ -95,7 +98,7 @@ export class StockItemComponent implements OnInit {
 
 在 `StockItem` 元件中加入一個方法, 用以抛出事件:
 
-```
+```typescript
 export class StockItemComponent implements OnInit {
 
   ...
@@ -119,8 +122,12 @@ export class StockItemComponent implements OnInit {
 父元件透過事件繫結(event binding)將其方法連結到子元件輸出特性。
 
 在 `StockList` 元件的模版中，使用 `StockItem` 元件的模版 `<app-stock-item>` 並進行事件繫結:
-```
+```html
+<!-- Template for the StockList component -->
 <div *ngFor="let stockObj of getStocks()">
+    <!-- Child component template of the StockList component -->
+    <!-- stockObj 為父元件樣版內的區域變數 -->
+    <!-- handleToggleEvent() 為父元件的方法 -->
     <app-stock-item [stock]="stockObj"
                     (toggleColorEvent)="handleToggleEvent($event)">
     </app-stock-item>
@@ -136,7 +143,7 @@ export class StockItemComponent implements OnInit {
 ### 為 StockItem 元件新增輸出特性
 
 開啟 `src\app\stock\stock-item\stock-item.component.ts`,
-修改編號 #1 ~ #4 的地方:
+修改編號 #1 ~ #2 的地方:
 
 ```typescript
 ...
@@ -176,13 +183,13 @@ export class StockItemComponent implements OnInit {
 開啟 `src\app\stock\stock-item\stock-item.component.ts`,
 
 加入以下的類別欄位及其修飾器:
-```
+```typescript
 @Output()
   public toggleColorEvent: EventEmitter<number>;
 ```
 
 在建構子中初始化 `toggleColorEvent` 類別欄位:
-```
+```typescript
 constructor() {
     this.toggleColorEvent = new EventEmitter<number>();
 }
@@ -190,7 +197,7 @@ constructor() {
 
 新增 `addCount()` 方法, 抛出事件:
 
-```
+```typescript
 addCount(): void {
     this.clickCount ++;
     this.toggleColorEvent.emit(1);
@@ -199,7 +206,7 @@ addCount(): void {
 
 在 `toggleColor()` 方法中呼叫 `addCount()`:
 
-```
+```typescript
 toggleColor() {
     this.positiveChange = !this.positiveChange;
     // Call addCount when toggling the color.
@@ -209,7 +216,7 @@ toggleColor() {
 
 完成的 `StockItem` 元件程式碼:
 
-```
+```typescript
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Stock } from 'src/app/model/stock';
 
@@ -264,7 +271,7 @@ export class StockItemComponent implements OnInit {
 
 完成的程式碼:
 
-```
+```typescript
 import { StockService } from './../../services/stock.service';
 import { Component, OnInit } from '@angular/core';
 import { Stock } from '../../model/stock';
@@ -297,15 +304,15 @@ export class StockListComponent implements OnInit {
 
 ### 在父元件的模版做事件繫結
 
-```
+```html
 <!-- #1 -->
 <div>
   Total toggle counts: {{this.totalCount}}
 </div>
 
 <div *ngFor="let stockObj of getStocks()">
+    <!-- #2 -->
     <app-stock-item [stock]="stockObj"
-                    <!-- #2 -->
                     (toggleColorEvent)="handleToggleEvent($event)">
     </app-stock-item>
 </div>
@@ -314,3 +321,13 @@ export class StockListComponent implements OnInit {
 執行程式:
 
 ![](img/u08-i05.png)
+
+
+## 回顧
+
+1. 將 UI 分割成不同的元件, 可以各別進行開發並重覆使用
+2. UI 元間之間的關係形成階層式關係 (樹狀結構)
+3. 父、子元件間可以溝通。
+   - 將父元件的值傳入子元件供其使用
+   - 子元件可抛出事件, 給父元件處理
+
