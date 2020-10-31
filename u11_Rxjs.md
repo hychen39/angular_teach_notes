@@ -28,11 +28,200 @@ Reactive Programming 可以讓應用程式具備事件導向式處理能力, 在
 
 
 
-## RxJS 術語(terminology)
+## RxJS 術語(terminology)與舉例
 
 Observable: 隨時間推送資料的資料串流
-Observer: 資料串流的消費者(consumer)
-Subscriber: 繫結觀察者與可觀察的串流
+Observer: 資料串流的消費者(consumer), 對取得的資料做處理, 例如印出資料
+Subscription: 表示 Observable 與 Observer 間的訂閱關係。
 Operator: 串流資料轉換的函數
 
+底下例子, 每隔 1 秒鐘印出計數的數字 0, 1, 2, 3..., 到第 5 秒的時候停止。
+
+Reactive Programming 的思維下,
+
+- Observable: 有個物件能夠每隔一秒產生一個數字
+- Observer: 對 Observable 進行訂閱, 印出得到的數字
+- Subscription: 描述 Observable 及 Observable 間的關係, 提供 unsubscribe() 取消訂閱, 結束關係。
+
+```typescript
+import { interval, Observer, of, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
+
+// Observable 可觀察串流
+const source = interval(1000);
+
+// Observer 觀察者
+let myObserver: Observer<number> = {
+    // 取得下個數字後的處理方法
+  next: value => console.log(value),
+  // 發生錯誤時的處理方法
+  error: err => console.log(err),
+  // 串流推送完畢的處理方法
+  complete: ()=> console.log('')
+};
+
+// 建立訂閱關係
+const subscription: Subscription = source.subscribe(myObserver);
+
+// 5 秒後, 結束訂閱關係
+setTimeout(() => {
+  console.log("Unsubscribe");
+  subscription.unsubscribe();
+}, 5000);
+```
+
+## RxJS Play Ground
+
+StackBlitz
+![](img/u11-i01.png)
+![](img/u11-i02.png)
+
+## 訂閱 Observable: Observer 的建立
+
+
+觀察者只是具有三個回呼方法(callbacks)的物件，每一個回呼方法對應到 Observable 可能傳遞的通知類型: 
+- next: Observable 將串流中的下一個元素推向 Observer, Observer 提供方法進行處理
+- error: 將錯誤訊息推向 Observer, Observer 提供方法進行處理
+- complete: 通知 Observer 串流資料全部輸出完成, Observer 提供方法進行處理。
+
+```typescript
+interface Observer<T> {
+  closed?: boolean
+  next: (value: T) => void
+  error: (err: any) => void
+  complete: () => void
+}
+```
+
+參考: [Observer Interface](https://rxjs-dev.firebaseapp.com/api/index/interface/Observer)
+
+
+```typescript
+import { from, Observer, of, Subscription, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+
+const disneyFriends = ['米老鼠', '高飛', '唐老鴨', '布魯托'];
+
+// 建立 Observer
+let myObserver: Observer<string> = {
+  next: (friend) => console.log(friend),
+  error: err => console.log(err),
+  complete: () => console.log('所有的朋友都來了!!')
+};
+
+// 向 Observable 進行訂閱, 訂閱時傳入 Observer
+from(disneyFriends).subscribe(myObserver);
+
+// 使用 implicit object
+from(disneyFriends).subscribe( {
+  next: friend => console.log(friend, ' bye bye'),
+  error: err => console.log(err),
+  complete: () => console.log('所有朋友都離開了!!')
+});
+```
+
+
+## Observable 的建立
+
+有數種方式可以建立 Observable stream。
+
+### `of()` RxJS function
+使用 `of()` 將一連串的數字轉成串流:
+
+```typescript
+import { interval, Observer, of, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
+
+// 建立 Observable Stream
+const source = of(1, 2, 3, 5, 9, 10, 11);
+
+let myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: ()=> console.log('串流推送完成')
+};
+
+const subscription: Subscription = source.subscribe(myObserver);
+```
+
+### `from()` RxJS function
+
+使用 [`from(myArray)`](https://rxjs-dev.firebaseapp.com/api/index/function/from) 將陣列或者 collection 變成串流:
+
+```js
+import { from, Observer, Subscription } from "rxjs";
+
+const myArray = ['A', 'B', 'C', 'D', 'E'];
+// const source = of(1, 2, 3, 5, 9, 10, 11);
+ const source = from(myArray);
+
+let myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: ()=> console.log('串流推送完成')
+};
+
+const subscription: Subscription = source.subscribe(myObserver);
+```
+
+![](https://rxjs-dev.firebaseapp.com/assets/images/marble-diagrams/from.png)
+
+### `interval()` RxJS function
+
+Creates an Observable that emits sequential numbers every specified interval of time, on a specified SchedulerLike.
+
+![](https://rxjs-dev.firebaseapp.com/assets/images/marble-diagrams/interval.png)
+
+
+```typescript
+import { from, Observer, of, Subscription, Observable, interval } from "rxjs";
+
+import { take } from "rxjs/operators";
+
+const take5Elements = interval(500).pipe(take(5));
+
+take5Elements.subscribe( x => console.log(x));
+```
+
+輸出結果:
+
+![](img/u11-i04.png)
+
+### new Observable() 方法
+
+使用 `Observable` 的建構子建立 `Observable` 物件。
+
+建立時, 要傳入 `Observer` 物件, `Observable` 物件會呼叫 `Observer` 物件的 `next()`, `error()`, 及 `complete()` 方法。
+
+```typescript
+import { from, Observer, of, Subscription, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+
+// const subscription: Subscription = source.subscribe(myObserver);
+
+
+// 建立
+const myObservable = new Observable( function subscribe(subscriber){
+  // subscriber is a observer
+  const myArray = ['A1', 'B1', 'C1', 'D1', 'E1'];
+  myArray.forEach( (element) => {
+    subscriber.next(element);
+  })
+  subscriber.complete();
+});
+
+// 建立 Observer 物件提供 next, error, complete 等事件發生時的處理
+let myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: ()=> console.log('串流推送完成')
+};
+
+
+myObservable.subscribe(myObserver);
+```
+
+輸出結果
+
+![](img/u11-i03.png)
 
