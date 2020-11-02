@@ -183,6 +183,8 @@ const take5Elements = interval(500).pipe(take(5));
 take5Elements.subscribe( x => console.log(x));
 ```
 
+[take pipe 運算子](https://rxjs-dev.firebaseapp.com/api/operators/take)
+
 輸出結果:
 
 ![](img/u11-i04.png)
@@ -224,4 +226,103 @@ myObservable.subscribe(myObserver);
 輸出結果
 
 ![](img/u11-i03.png)
+
+## Pipeable Operators (可串接運算子)
+
+Reactive Programming 中的運算子為函數, 將輸入依據規則轉換成輸出。
+
+
+A Pipeable Operator is a function that takes an Observable as its input and returns another Observable. It is a pure operation: the previous Observable stays unmodified.
+可串接運算子是一個函數, 將一個 Observable 作為其輸入並輸出另一個Observable。 這是一個單純操作：來源的 Observable 保持不變。
+
+![](https://www.techgeeknext.com/img/rxjs/rxjs-operators.png)
+
+Ref: [RxJS Operators Explained with Example (2020) | TechGeekNext >>](https://www.techgeeknext.com/angular/angular-rxjs-operators)
+
+上述圖形的程式碼:
+```typescript
+import { Observer, of } from 'rxjs'; 
+import { filter, map } from 'rxjs/operators';
+
+
+const source$ = of(1,2,3).pipe(
+  map(x => x*2),
+  filter(x => x < 5)
+);
+
+const myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: () => console.log('Complete!!')
+}
+
+source$.subscribe(myObserver);
+```
+
+![](img/u11-i05.png)
+
+### Pipeable Operator 的類型
+
+[RxMarbles: Interactive diagrams of Rx Observables](https://rxmarbles.com/#map) 提供各類 operators 的 marble diagram (彈珠圖)。
+
+完整的類型請參考: [Operators | RxJS](https://rxjs-dev.firebaseapp.com/guide/operators)
+
+![](img/u11-i06.png)
+
+Marble Diagram 的閱讀方式:
+- Input Observable: 輸入的 Observable (內容不受 Operator 的影響)
+- Operator: 對 Observable 元素作用的運算子
+- Output Observable: 運算後輸出的 Observable
+
+#### FILTERING OPERATORS (過濾運算子)
+
+##### Filter Operator
+[filter](https://rxjs-dev.firebaseapp.com/api/operators/filter)
+![](img/u11-i07.png)
+
+```
+filter<T>(predicate: (value: T, index: number) => boolean, thisArg?: any): MonoTypeOperatorFunction<T>
+```
+
+Example for the Filter operator:
+```typescript
+import { interval, Observable,  Observer, of, timer } from 'rxjs'; 
+import { filter, map, take } from 'rxjs/operators';
+
+
+const source$ = new Observable( function subscribe(subscriber){
+  setInterval( ()=>{
+    const rn: number = Math.round(Math.random() * 100);
+    subscriber.next(rn);
+  } , 1000)
+});
+
+const myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: () => console.log('Complete!!')
+}
+
+const sourceFiltered$ = source$.pipe(take(5));
+
+ sourceFiltered$.subscribe(myObserver);
+
+```
+
+![](img/u11-i11.png)
+
+##### Take Operator
+
+![](img/u11-i08.png)
+
+#### Mathematical and Aggregate Operators (數學與聚合運算字)
+
+reduce
+![](img/u11-i09.png)
+
+#### TRANSFORMATION OPERATORS (轉換運算子)
+
+map
+![](img/u11-i10.png)
+
 
