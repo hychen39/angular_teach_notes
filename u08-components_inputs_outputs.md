@@ -20,10 +20,13 @@ Src: https://v2.angular.io/docs/ts/latest/guide/architecture.html
 
 Stock List 中原本顯示股票清單, 現要改成顯示  Stock Item。 另外, 點擊 "Toggle the price color" 按鈕時, 會累計總次數。
 
+<div style="display: flex">
+
 ![](img/u08-i02.png)
 
 ![](img/u08-i07.png)
 
+</div>
 <!-- ![](img/u08-i03.png) -->
 
 
