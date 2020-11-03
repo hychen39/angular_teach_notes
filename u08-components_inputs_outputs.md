@@ -5,25 +5,33 @@
 
 將 UI 分割成不同的元件, 可以各別進行開發並重覆使用:
 ![](img/u08-i01.png)
-Src: Yakov Fain and Anton Moiseev, Angular Development
-with Typescript, 2nd Edition, Manning
+
+Src: Yakov Fain and Anton Moiseev, Angular Development with Typescript, 2nd Edition, Manning
 
 元件樹(Component Tree)
 ![](https://v2.angular.io/resources/images/devguide/architecture/component-tree.png)
 Src: https://v2.angular.io/docs/ts/latest/guide/architecture.html
 
-父、子元件間的溝通
-可從父元件輸入資料到子元件
-子元件可以輸出事件, 在父元件中處理
+父、子元件間的溝通: 
+- 可從父元件輸入資料到子元件
+- 子元件可以輸出事件, 在父元件中處理
 
 ## 需求
 
-Stock List 中的股票顯示方式要改成 Stock Item 的顯示方式:
+Stock List 中原本顯示股票清單, 現要改成顯示  Stock Item。 另外, 點擊 "Toggle the price color" 按鈕時, 會累計總次數。
+
 ![](img/u08-i02.png)
 
-![](img/u08-i03.png)
+![](img/u08-i07.png)
 
-另外, 點擊 "Toggle the price color" 按鈕時, 會累計總次數。
+<!-- ![](img/u08-i03.png) -->
+
+
+
+
+## 父元件與子元件間的事件及資料流: 概覽
+
+![](img/u08-i06.png)
 
 ## 由父元件輸入資料到子元件
 
@@ -62,11 +70,15 @@ export class StockItemComponent implements OnInit {
 
 子元件輸出事件, 讓[父元件監聽子元件的事件](https://angular.tw/guide/component-interaction#parent-listens-for-child-event)。
 
-開發上的過程如下:
-1. 子元件暴露一個 EventEmitter 類別的欄位, 使其成為輸出特性(output property)。
+開發程序如下:
+**子元件**
+1. 子元件公開一個 EventEmitter 類別的欄位, 使其成為輸出特性(output property)。
 2. 子元件的方法利用輸出特性的 `emit()`抛出事件(此類事件為自訂事件)。
-3. 父元件透過事件繫結(event binding)將其方法連結到子元件輸出特性。
-4. 當子元件抛出事件, 父元件中由與該輸出變數有事件繫結的方法會被呼叫。
+
+**父元件**
+
+3. 父元件在樣版(template)中透過事件繫結(event binding)將其方法連結到子元件輸出特性。
+4. 當子元件抛出事件, 與子元件輸出變數有事件繫結的父元件方法會被呼叫。
 
 ### 元件的輸出特性(Output Property)
 
