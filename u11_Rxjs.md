@@ -315,14 +315,72 @@ const sourceFiltered$ = source$.pipe(take(5));
 
 ![](img/u11-i08.png)
 
+Example of the Take Operator
+```typescript
+import { of, interval, Observer } from 'rxjs'; 
+import { map, take, filter, reduce } from 'rxjs/operators';
+
+
+const source$ = of(1,2,3,4).pipe(take(2));
+
+const myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: () => console.log('Complete!!')
+}
+
+source$.subscribe(myObserver);
+```
+
 #### Mathematical and Aggregate Operators (數學與聚合運算字)
 
 reduce
 ![](img/u11-i09.png)
 
+
+Example for the Reduced operator
+```typescript
+import { of, interval, Observer } from 'rxjs'; 
+import { map, take, filter, reduce } from 'rxjs/operators';
+
+
+const source$ = interval(500).pipe(
+  filter (x => x > 0), 
+  take(5), 
+  reduce( (x, cumulation) => x + cumulation)
+  );
+
+const myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: () => console.log('Complete!!')
+}
+
+source$.subscribe(myObserver);
+```
+
 #### TRANSFORMATION OPERATORS (轉換運算子)
+
 
 map
 ![](img/u11-i10.png)
 
+Example for the Map operator
+```typescript
+import { of, interval, Observer } from 'rxjs'; 
+import { map, take, filter } from 'rxjs/operators';
 
+
+const source$ = interval(500).pipe(
+  filter (x => x > 0), 
+  take(3), 
+  map(x => 10 * x ));
+
+const myObserver: Observer<number> = {
+  next: value => console.log(value),
+  error: err => console.log(err),
+  complete: () => console.log('Complete!!')
+}
+
+source$.subscribe(myObserver);
+```
