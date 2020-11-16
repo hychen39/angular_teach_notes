@@ -26,11 +26,12 @@ Angular 為表單 `<form>` 及其內部的控制項 `<input>` 建立相對應的
 3. 表單狀態控制及取得驗證錯誤訊息
 
 
-## 範本驅動式表單驗證的三個重要指令(directive)
+## 範本驅動式表單驗證的重要指令(directive)
 
 這些指令定義於 `FormsModule`, 使用前要匯入專案中。
 
-指令包括: `NgForm`，`NgModel` 及 `NgGroup`
+指令包括: `NgForm` 及 `NgModel` 
+<!-- 及 `NgGroup` -->
 
 
 [NgForm directive](https://angular.io/api/forms/NgForm)
@@ -44,9 +45,9 @@ Angular 為表單 `<form>` 及其內部的控制項 `<input>` 建立相對應的
 - 也可提供個別控制項的狀態及驗證錯誤訊息
 
 
-NgModelGroup directive
+<!-- NgModelGroup directive
 - 建立 FormGroup 實例並將其綁定到某個 DOM 元素。
-- 方便將表單內的控制項再分群
+- 方便將表單內的控制項再分群 -->
 
 
 ![](img/u10-i01.png)
@@ -57,11 +58,13 @@ Src: https://www.ryadel.com/en/angular-forms-template-driven-model-driven-reacti
 - Angular 會依控制項的狀態自動套用預定樣式的名稱
 - 開發者只需設定這些預定樣式名稱下的 CSS 
 
-控制項狀態 | true 時套用 CSS 類別 | false 時套用的類別|
+控制項狀態 | true 時, 套用 CSS 類別 | false 時, 套用的類別|
 --|--|--
 Visited | ng-touched | ng-untouched
 Changed | ng-dirty | ng-pristine
 Valid | ng-valid | ng-invalid
+
+pristine (adj.) 新的; 良好的
 
 Render 出來的 html 元件如下:
 ```html
@@ -75,13 +78,14 @@ Render 出來的 html 元件如下:
 
 
 ### 取得個別控制項的狀態
-在樣版中使用模板參考變數(template reference variable)取得控制項的 `NgModel` 實體:
+
+在樣版中使用模板參考變數(template reference variable), 透過 `NgModel`指令取得控制項的實體:
 
 ![](img/u10-i04.png)
 
-模板參考變數只限在現有模板中使用, 不能在其它模板使用。
+模板參考變數(以 `#` 註記的變數名)只限在現有模板中使用, 不能在其它模板使用。
 
-`NgModel` 實體提供控制項狀態相關的屬性:
+`NgModel` 指令中提供有關控制項狀態的屬性:
 
 ```
 value: any
@@ -105,11 +109,12 @@ status: string | null
 ```
 Ref: https://angular.io/api/forms/NgModel#inherited-from-abstractcontroldirective
 
-使用範本表示式(template expression) 配合 `NgModel` 實體的特性, 用來顯示提示訊息:
+使用範本表示式(template expression) 配合 `NgModel` 指令的特性, 顯示提示訊息:
 
 ```html
 <div class="form-group">
     <label for="name">Name</label>
+    <!-- #name 為樣版變數 -->
     <input type="text" class="form-control" id="name"
                required
                [(ngModel)]="model.name" name="name"
@@ -118,7 +123,8 @@ Ref: https://angular.io/api/forms/NgModel#inherited-from-abstractcontroldirectiv
     <div [hidden]="name.valid || name.pristine"
         class="alert alert-danger">
          Name is required
-        </div>
+    </div>
+</div>
 ```
 
 ### 取得驗證錯誤類型
@@ -127,29 +133,33 @@ Ref: https://angular.io/api/forms/NgModel#inherited-from-abstractcontroldirectiv
 
 如何知道是那個驗證規則產生錯誤?
 
-`NgModel` 實體中的 `errors: ValidationErrors | null` 可以告知驗證錯誤型態。
+`NgModel` 指令中的 `errors: ValidationErrors | null` 特性可以告知驗證錯誤型態。
 
 `ValidationErrors` 是一個 map 資料結構, 提供驗證規則名稱做為 key 值, 以取得詳細錯誤內容:
 
 使用 `pattern` 驗證規則:
 ```html
 <div class="stock-price">
-        <input type="number" placeholder="Stock Price"
-            name="stockPrice" [(ngModel)]="this.stock.price"
-            min="0" pattern="^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$"
-               #price="ngModel" />
-            <div *ngIf="price.errors?.pattern">
-            <!-- 顯示詳細錯誤內容 -->
-            <p> {{price.errors.pattern | json}} </p>
-            <!-- 顯示一般錯誤訊息 -->
-            <p>Need positive price.</p>
-        </div>
-    </div>
+  <input type="number" placeholder="Stock Price"
+      name="stockPrice" [(ngModel)]="this.stock.price"
+      min="0" pattern="^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$"
+         #price="ngModel" />
+
+  <div *ngIf="price.errors?.pattern">
+      <!-- 顯示詳細錯誤內容 -->
+      <p> {{price.errors.pattern | json}} </p>
+      <!-- 顯示一般錯誤訊息 -->
+      <p>Need positive price.</p>
+  </div>
+
+</div>
 ```
 ![](img/u10-i05.png)
 
 
 Angular 內建的驗證規則, 參考 https://angular.io/api/forms/Validators
+
+![](img/u09-i05.png)
 
 ## 取得表單整體狀態
 
@@ -208,6 +218,16 @@ Previous price | 大於 0 的數字; Regex Pattern 檢查 | Need Positive price.
 
 開啓 `src\app\stock\stock-create\stock-create.component.html`
 
+未加入驗證器前:
+
+```html
+<div>
+  <input type="text" placeholder="Stock Name" 
+          name="stockName" [(ngModel)]="this.stock.name" />
+</div>
+```
+
+加入驗證器 `required` 及錯誤訊息顯示:
 ```html
 <!-- #1 -->
 <form (ngSubmit)="createStock()"        
@@ -240,7 +260,17 @@ Previous price | 大於 0 的數字; Regex Pattern 檢查 | Need Positive price.
 
 ### 建立 Stock Code 表單控制項
 
-接續在下方輸入 Stock Code 表單控制項:
+接續在下方輸入 Stock Code 表單控制項。
+
+未加入驗證器前:
+```html
+<div>
+   <input type="text" placeholder="Stock Code" 
+        name="stockCode" [(ngModel)]="this.stock.code"/>
+</div>
+```
+
+加入驗證器 `maxlength` 及 `minlength`:
 ```html
 <!-- #1 -->
 <div class="stock-code">
@@ -264,8 +294,19 @@ Previous price | 大於 0 的數字; Regex Pattern 檢查 | Need Positive price.
 
 ### 建立 Price 及 Previous Price 的表單控制項:
 
+未加入驗證器前:
+```html
+<div>
+  <input type="number" placeholder="Stock Price" 
+         name="stockPrice" [(ngModel)]="this.stock.price" />
+</div>
+<div>
+  <input type="number" placeholder="Previous Price" 
+         name="previousPrice" [(ngModel)]="this.stock.previousPrice" />
+</div>
+```
 
-接續在下方輸入:
+加入驗證器 `pattern` :
 ```html
 <div class="stock-price">
 <!-- #1 -->
@@ -277,14 +318,15 @@ Previous price | 大於 0 的數字; Regex Pattern 檢查 | Need Positive price.
             #price="ngModel" />
 <!--      Ref: https://stackoverflow.com/questions/53956477/validation-error-in-angular-inputtype-number -->
 <!--      min and max validator are only supported in the Reactive Form -->
-            <div *ngIf="price.errors?.pattern">
+        <div *ngIf="price.errors?.pattern">
 <!-- #2 -->
                 <p> {{price.errors.pattern | json}} </p>
                 <p>Need positive price.</p>
         </div>
-    </div>
-    <div class="stock-price">
-        <input type="number" placeholder="Previous Price"
+</div>
+
+<div class="stock-price">
+    <input type="number" placeholder="Previous Price"
             name="previousPrice" 
             [(ngModel)]="this.stock.previousPrice"
             min="0" 
@@ -293,16 +335,17 @@ Previous price | 大於 0 的數字; Regex Pattern 檢查 | Need Positive price.
       <div *ngIf="previousPrice.errors?.pattern">
         Need positive price.
       </div>
-    </div>
+</div>
 ```
 
 1. `<input>`
    - pattern 驗證規則, 使用 regexp. 
-     - match: 0, +0, 1., 1.5, .5666
-     - not match: ., 1..5, 1.2.3, -1 
-   - min 驗證規則, 但無法阻止使用者輸入負值, 所以才使用 RegExp 進行驗證, 確保輸入大於 0 的數值. 
-2. `<p> {{price.errors.pattern | json}} </p>`
+     - matched examples: 0, +0, 1., 1.5, .5666
+     - not matched examples: ., 1..5, 1.2.3, -1 
+   - min 驗證規則: 無法阻止使用者輸入負值, 所以才使用 RegExp 進行驗證, 確保輸入大於 0 的數值. 
+2. `<p> {{price.errors?.pattern | json}} </p>`
    - `price` 為模板參考變數, 為 `stockPrice` 控制項的 `NgModel` 實體, 所以他的 `errors` 特性, 以 `pattern` 為鍵值, 取得驗證錯誤時的回饋資訊, 回饋資訊以 json 格式顯示.
+  
 ![](img/u10-i07.png)
 
 ### 建立按鈕, 並依表單狀態進行啟用控制
@@ -321,3 +364,56 @@ Previous price | 大於 0 的數字; Regex Pattern 檢查 | Need Positive price.
 - 將 `<button>` DOM 元素的 `disabled` 特性與 `stockCreateForm` 模板參考變數的 `invalid` 特性繫結在一起. 
 - 只要表單中有任何一個控制項的狀態 invalid, 則整個表單的狀態將成為 invalid.
 - 當 表單 invalid 時, disable `<button>` DOM 元素.
+
+執行程式, 查看結果。
+
+## 回顧
+
+Angular 為表單 `<form>` 及其內部的控制項 `<input>` 建立相對應的指令(directive), 以進行:
+  1. 表單資料與元件特性間的自動同步
+  2. 表單控制項狀態控制、取得驗證錯誤訊息及使用自訂驗證器
+  3. 表單狀態控制及取得驗證錯誤訊息
+
+
+範本驅動式表單驗證的重要指令(directive): `NgForm` 及 `NgModel` 
+  - NgForm directive 為表單建立一個頂層的 `FormGroup` 實體
+  - NgModel directive 為每個表單控制項繫結一個 `FormControl` 實體
+
+
+Angular 會依控制項的狀態自動套用預定樣式的名稱, 開發者只要設定這些預定樣式, 即可利用不同樣式顯示控制項狀態。
+
+在樣版中使用模板參考變數(template reference variable) 透過 `NgModel` 指令取得相對應的 `FormControl` 實體。後續, 就可以由模板參考變數取得該 FormControl 實體的狀態。
+
+除了由就可以由模板參考變數取得 FormControl 實體的狀態, 也可以藉其取得驗證錯誤的類型。
+
+範例:
+
+```html
+<div class="stock-price">
+  <input type="number" placeholder="Stock Price"
+      name="stockPrice" [(ngModel)]="this.stock.price"
+      min="0" pattern="^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$"
+         #price="ngModel" />
+
+   <div [hidden]="price.valid || price.pristine"
+        class="alert alert-danger">
+        <!-- 依狀態來顯示訊息 -->
+         Price is required
+    </div>
+
+  <div *ngIf="price.errors?.pattern">
+        <!-- 顯示一般錯誤訊息 -->
+      <p>Need positive price.</p>
+  </div>
+
+</div>
+```
+
+- 使用模版參考變數取得 `<form>` 元素上附加的 `NgForm` 實體:
+
+```html
+<form #stockCreateForm="ngForm">
+...
+</form>
+```
+

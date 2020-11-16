@@ -27,10 +27,9 @@ Ref: [[Angular] Reactive Forms (Model-driven) | karatejb.blogspot.com ](https://
 
 **`ngModel` 指令**
 - 模板驅動式表單中, 使用 `ngModel` 指令將 DOM 元素的 `value` 特性與元件特性繫結在一起。
+- `ngModel` 指令會為對應的 DOM 元素自動建立一個 `FormControl` (但我們無法直接以程式的方式存取表單上的 `FormControl`).
 - Angular 會自動同步 DOM 元素的 `value` 特性與其繫結的元件特性值。
   
-- `ngModel` 指令會為對應的 DOM 元素自動建立一個 `FormControl`, 但我們無法直接以程式的方式存取表單上的 `FormControl`.
-
 - `ngModel` 指令(directive)是屬於「屬性型指令」, 需要在元件樣版中使用。該指令會將表單控制項值設定到元件的特性; 或者將元件的特性值設定表單控制項的 `value` 特性(同步表單控制項及元件特性兩邊的值)。
 
 **為表單控制項命名**
