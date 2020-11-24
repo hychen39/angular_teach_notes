@@ -1,7 +1,6 @@
 
 # Unit 09 範本驅動式表單(template driven form)
 
-## 匯入 `FormsModule` 到專案中
 
 ## 表單的結構
 
@@ -174,7 +173,7 @@ export class StockCreateComponent implements OnInit {
 
 ### 為 `StockService` 服務新增建立股票的方法
 
-按下 表單(B)Create 後, 新的 `Stock` 物件存放到 `StockService` 服務的 `stocks: Stock[]`中。
+我們期望按下 表單(B)Create 後, 呼叫 `StockService.create()`方法將新的 `Stock` 物件存放到 `StockService` 服務的 `stocks: Stock[]`中。
 
 開啟 `src\app\services\stock.service.ts`。
 
@@ -197,13 +196,14 @@ export class StockService {
 }
 ```
 
-### 在 `StockCreate` 元件新增特性以儲存表單值, 及建立提交時的處理方法
+### 建立 `StockCreate` 元件顯示表單及儲存表單值
 
+<!-- 新增特性以儲存表單值, 及建立提交時的處理方法 -->
 
-開啟 `src\app\stock\stock-create\stock-create.component.ts`
+開啟 `src\app\stock\stock-create\stock-create.component.ts`:
 
 1. 建立一個 `stock:Stock` 特性
-2. 在 `ngOnInit()` 初始化此特性
+2. 在建構子中 `constructor()` 初始化此特性
 3. 建立 `createStock(): void` 將表單的 `stock` 物件存到 `StockService` 服務元件中。
 
 ```typescript
@@ -217,17 +217,20 @@ import { StockService } from 'src/app/services/stock.service';
   styleUrls: ['./stock-create.component.css']
 })
 export class StockCreateComponent implements OnInit {
-  // 儲存表單值的欄位
+  // 1. 儲存表單值的欄位
   public stock: Stock;
 
-  constructor(private stockService: StockService) { }
+  constructor(private stockService: StockService) {
+    // 初始化欄位
+    this.stock = new Stock('Cheshire Cat Company', 'CCC', 200, 220);.
+   }
 
   ngOnInit() {
-    // 初始化欄位
-    this.stock = new Stock('Cheshire Cat Company', 'CCC', 200, 220);
+    
   }
-
-  /** 表單 Submit 事件發生時呼叫
+  
+  //3. 
+  /** 表單 ngSubmit 事件發生時呼叫
    * Create a new stock using this.stock
    */
   createStock(): void {
@@ -273,6 +276,26 @@ Angular 自動為 `<form>` 附加上 `ngForm` 指令, 為表單建立一個 `For
     </div>
 </form>
 ```
+
+### 為 `StockCreate` 元件建立 Routing path 及 Router Link
+
+開啟 `src\app\app-routes.module.ts`, 加入 routing path `stock\create` 給 `StockCreateComponent`:
+
+```typescript
+const appRoutes: Routes = [
+  {path: 'stock/list', component: StockListComponent},
+  // 加入的 path
+  {path: 'stock/create', component: StockCreateComponent},
+  {path: 'stock/detail/:id', component: StockDetailsComponent},
+  {path: 'stock/item', component: StockItemComponent},
+  // {path: 'stock/detail/:id', component: StockListComponent},
+  {path: '', redirectTo: 'stock/stock-list', pathMatch:'full'}]
+```
+
+開啟 `src\app\app.component.html`, 加入 `StockCreateComponent` 的 router link:
+
+![](img/u10-i08.png)
+
 
 執行程式查看結果
 
