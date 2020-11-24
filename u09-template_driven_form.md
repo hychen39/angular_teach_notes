@@ -56,6 +56,8 @@ export class FavoriteColorComponent {
 }
 ```
 
+[Codes in Stackblitz](https://stackblitz.com/edit/angular-ivy-vkklta?file=src/app/app.component.ts)
+
 **Data flow: View to Model**
 
 上前述例子為例, 若使用者在表單上的 `Favorite Color` 欄位輸入 `Blue`, 由 View 到 Model 的資料流向如下:
@@ -86,7 +88,7 @@ Src: [建立範本驅動表單 | angular.tw](https://angular.tw/guide/forms-over
 
 Angular 為 `<form>` 元素附自動加上一個 [`NgForm` 指令](https://angular.io/api/forms/NgForm)，此指令會建立一個 `FormGroup` 實體來描述表單內控制項的結構, 並追縱表單的狀態, 以利進行表單驗證。
 
-`NgForm`指令會抛出 `ngSubmit` 事件, 當按下 Submit 按鈕時。監聽此一事件, 進行表單處理。
+`NgForm` 指令會抛出 `ngSubmit` 事件, 當按下 Submit 按鈕時。監聽此一事件, 進行表單處理。(注意, 是 ngSubmit, 不是 onSubmit 事件)
 
 例如, 有以下新增股票表單，按下 `Create` 按鈕後希望能夠新增一支股票到儲存庫中。
 
