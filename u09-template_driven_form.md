@@ -7,30 +7,33 @@
 
 Angular 的表單由以下的[表單基礎類別](https://angular.tw/guide/forms-overview#common-form-foundation-classes)所組成:
 
-- FormControl 實例用於追蹤單個表單控制元件的值和驗證狀態。(FormControl tracks the value and validation status of an individual form control.)
-
-- FormGroup 用於追蹤一組表單控制元件的值和狀態。(FormGroup tracks the same values and status for a collection of form controls.) 當表單控制項(form control) 間有相關性必須一起控制時, 使用 FormGroup 將這些控制項分在同一群。
-  - FormGroup 把每個子 FormControl 的值聚合進一個物件，它的 key 是每個控制元件的名字。 它透過歸集其子控制元件的狀態值來計算出自己的狀態。 比如，如果組中的任何一個控制元件是無效的，那麼整個組就是無效的。
-  
-- FormArray 用於追蹤表單控制元件陣列的值和狀態。(FormArray tracks the same values and status for an array of form controls.)。
-  - 控制元件可以是 FormControl、FormGroup 或 FormArray 的實例。
-  - FormArray 也可用來[建立動態表單](https://angular.tw/guide/reactive-forms#creating-dynamic-forms)。
-
-- ControlValueAccessor 用於在 Angular 的 FormControl 實例和原生 DOM 元素之間建立一個橋樑。(ControlValueAccessor creates a bridge between Angular FormControl instances and native DOM elements.)
-
-
 ![](https://1.bp.blogspot.com/-c2fQBjuSIrA/WMptRf8ylkI/AAAAAAAAEXU/nf_s5HrDvYwMcpad_wxJaKiqL-xLv126wCLcB/s1600/image003.jpg)
 
 Ref: [[Angular] Reactive Forms (Model-driven) | karatejb.blogspot.com ](https://karatejb.blogspot.com/2017/03/angular2-reactive-forms-model-driven.html)
 
+- FormControl 實例用於追蹤單個表單控制元件的值和驗證狀態。(FormControl tracks the value and validation status of an individual form control.)
+
+- FormGroup 用於追蹤一組表單控制元件的值和狀態。(FormGroup tracks the same values and status for a collection of form controls.) 當表單控制項(form control) 間有相關性必須一起控制時, 使用 FormGroup 將這些控制項分在同一群。
+  - FormGroup 把每個子 FormControl 的值聚合進一個物件，它的 key 是每個控制元件的名字。 它透過聚集其子控制元件的狀態值來計算出自己的狀態。 比如，如果組中的任何一個控制元件是無效的，那麼整個組就是無效的。
+  
+- FormArray 用於追蹤「表單控制元件陣列」的值和狀態。(FormArray tracks the same values and status for an array of form controls.)。
+  - 控制元件可以是 FormControl、FormGroup 或 FormArray 的實例。
+  - FormArray 也可用來[建立動態表單](https://angular.tw/guide/reactive-forms#creating-dynamic-forms)。
+
+- ControlValueAccessor(控制值存取器) 用於在 Angular 的 FormControl 實例和原生 DOM 元素之間建立一個橋樑。(ControlValueAccessor creates a bridge between Angular FormControl instances and native DOM elements.)
+
+
+
 ## 模板驅動式表單
 
+使用 `ngModel` 指令將 DOM 元素的 `value` 特性與元件特性繫結在一起。
+
 **`ngModel` 指令**
-- 模板驅動式表單中, 使用 `ngModel` 指令將 DOM 元素的 `value` 特性與元件特性繫結在一起。
-- `ngModel` 指令會為對應的 DOM 元素自動建立一個 `FormControl` (但我們無法直接以程式的方式存取表單上的 `FormControl`).
-- Angular 會自動同步 DOM 元素的 `value` 特性與其繫結的元件特性值。
+
+- `ngModel` 指令會為對應的 DOM 元素自動建立一個 `FormControl` (但我們無法直接以程式的方式存取表單上的 `FormControl`), 並自動同步 DOM 元素的 `value` 特性與其繫結的元件特性值。
   
-- `ngModel` 指令(directive)是屬於「屬性型指令」, 需要在元件樣版中使用。該指令會將表單控制項值設定到元件的特性; 或者將元件的特性值設定表單控制項的 `value` 特性(同步表單控制項及元件特性兩邊的值)。
+- `ngModel` 指令(directive)是屬於「屬性型指令」, 需要在元件樣版中使用。
+  - 該指令會將表單控制項值設定到元件的特性; 或者將元件的特性值設定表單控制項的 `value` 特性(同步表單控制項及元件特性兩邊的值)。
 
 **為表單控制項命名**
 - 使用時, 必須對控制元件命名。亦即, 設定控制元件的 `name` 屬性。如此,  `ngModel` 產生的 `FormControl` 實體才能註冊到 `FromGroup` 中(參考 [Naming control elements](https://angular.tw/guide/forms#naming-control-elements))。
@@ -55,6 +58,8 @@ export class FavoriteColorComponent {
   favoriteColor = '';
 }
 ```
+
+注意 `ngModel` 指令的資料流向為 flow-in 及 flow-out, 所以使用符號 `[()]`。
 
 [Codes in Stackblitz](https://stackblitz.com/edit/angular-ivy-vkklta?file=src/app/app.component.ts)
 
@@ -86,7 +91,7 @@ Src: [建立範本驅動表單 | angular.tw](https://angular.tw/guide/forms-over
 
 **NgForm 及 NgGroup 指令**
 
-Angular 為 `<form>` 元素附自動加上一個 [`NgForm` 指令](https://angular.io/api/forms/NgForm)，此指令會建立一個 `FormGroup` 實體來描述表單內控制項的結構, 並追縱表單的狀態, 以利進行表單驗證。
+Angular 為 `<form>` 元素自動附加上一個 [`NgForm` 指令](https://angular.io/api/forms/NgForm)，此指令會建立一個 `FormGroup` 實體來描述表單內控制項的結構, 並追縱表單的狀態, 以利進行表單驗證。
 
 `NgForm` 指令會抛出 `ngSubmit` 事件, 當按下 Submit 按鈕時。監聽此一事件, 進行表單處理。(注意, 是 ngSubmit, 不是 onSubmit 事件)
 
@@ -163,6 +168,7 @@ export class StockCreateComponent implements OnInit {
 
 開啟 `src\app\app.module.ts`
 
+匯入 `@angular/forms` 模組到 `AppModule` 中。
 ![](img/u09-i04.png)
 
 
@@ -170,7 +176,9 @@ export class StockCreateComponent implements OnInit {
 
 按下 表單(B)Create 後, 新的 `Stock` 物件存放到 `StockService` 服務的 `stocks: Stock[]`中。
 
-開啟 `src\app\services\stock.service.ts`
+開啟 `src\app\services\stock.service.ts`。
+
+新增 `create(stock: Stock): void` 方法:
 
 ```typescript
 ...
@@ -193,6 +201,10 @@ export class StockService {
 
 
 開啟 `src\app\stock\stock-create\stock-create.component.ts`
+
+1. 建立一個 `stock:Stock` 特性
+2. 在 `ngOnInit()` 初始化此特性
+3. 建立 `createStock(): void` 將表單的 `stock` 物件存到 `StockService` 服務元件中。
 
 ```typescript
 import { Stock } from 'src/app/model/stock';
@@ -229,6 +241,12 @@ export class StockCreateComponent implements OnInit {
 ```
 
 ### 在 StockCreate 元件的模版中建立表單
+
+Angular 自動為 `<form>` 附加上 `ngForm` 指令, 為表單建立一個 `FormGroup` 物件。
+
+使用 `ngSubmit` 指令綁定提交表單時要執行的元件方法。
+
+使用 `ngModel` 指令自動建立 `FormControl` 物件, 並自動註冊到表單的  `FormGroup` 物件 。
 
 ```html
 <p>stock-create works!</p>
