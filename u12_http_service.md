@@ -1,0 +1,635 @@
+# Unit 12 使用 HTTP 與 Server 互動  
+
+## JSON 的字串解析(parsing)及物件的字串化
+
+JSON parsing (字串解析): JSON 字串轉成 JSON 物件
+
+JSON serialization (物件字串化): JSON 物件轉成字串表示式
+
+
+ECMAScript 5 提供 `JSON` 類別處理 JSON.
+- `JSON.parsing()`: JSON 字串轉成 JSON 物件
+- `JSON.stringify()`: JSON 物件轉成字串表示式
+
+Parsing 範例: 
+```typescript
+// Import stylesheets
+import "./style.css";
+
+// Write TypeScript code!
+const appDiv: HTMLElement = document.getElementById("app");
+appDiv.innerHTML = `<h1>TypeScript Starter</h1>`;
+
+let book = {
+  title: "professional JavaScript",
+  authors: ["Nicholas C. Zakas", "Matt Frisbie"],
+  edition: 4,
+  year: 2017
+};
+
+// Json serialization
+
+let bookJsonStr = JSON.stringify(book);
+
+appDiv.innerHTML = "<p>" + bookJsonStr + "</p>";
+
+// JSON parsing
+
+let bookCopy = JSON.parse(bookJsonStr);
+console.log(bookCopy);
+// print out the bookCopy object
+let result = "";
+for (let prop in bookCopy) {
+  result += "bookCopy" + "." + prop + " = " + bookCopy[prop] + "<br/>";
+}
+
+appDiv.innerHTML += "<p>" + result + "</p>";
+```
+
+輸出
+
+```
+{"title":"professional JavaScript","authors":["Nicholas C. Zakas","Matt Frisbie"],"edition":4,"year":2017}
+
+bookCopy.title = professional JavaScript
+bookCopy.authors = Nicholas C. Zakas,Matt Frisbie
+bookCopy.edition = 4
+bookCopy.year = 2017
+```
+
+[Source Codes | Stackblitz](https://stackblitz.com/edit/json-parsing-serialization?file=index.ts)
+
+
+## HTTPClient Service
+
+`HTTPClient` Service 負責非同步 HTTP 請求
+
+`HTTPClient` Service 在 `HTTPClientModule` 定義
+
+`HTTPClient` Service 的交易結果皆為 RxJS `Observables`
+
+## Setup for server communication
+
+1. 將 HTTPClientModule 加入專案
+2. 注入 HttpClient service 到需要的元件或服務
+3. 在需要處, 匯入 rxjs 及 rxjs/operators 模組中的類別
+
+[實作 1](#實作-1-在專案中設定-http-client)
+
+
+## 設定 Http Request Headers
+
+請求標頭包含有關要獲取的(遠端)資源或客戶端(client)本身的更多信息。
+
+[HTTP Headers 清單](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
+
+### Client 和 Server 間的內容協商(Content negotiation) 相關的 Header:
+
+- Accept: Informs the server about the types of data that can be sent back.
+- Accept-Charset: Which character encodings the client understands.
+- Accept-Encoding: The encoding algorithm, usually a compression algorithm, that can be used on the resource sent back.
+
+Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
+
+
+### 和資源內容有關的 Headers
+
+- [Content-Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type): 指定資源的媒體型態。
+  - 在請求時, client 告訴 Server 要傳送的資料型態
+  - 在請求回覆(response)時, Server 告訴 Server 回傳的內容的資料型態
+  - 允許的[媒體型態清單](https://www.iana.org/assignments/media-types/media-types.xhtml)
+  - 如 `application/json`
+
+Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
+
+### HTTPHeaders 類別
+
+`@angular/common/http` 中的 [`HTTPHeaders`](https://angular.io/api/common/http/HttpHeaders) 用來表示 HTTP 通訊協定下的 Headers。
+
+
+例如, 提出 Http Get Request 時指定可接受的內容:
+
+```typescript
+// Method 1
+const httpHeaders:HttpHeaders = new HttpHeaders({"accept": "application/json"})
+// Method 2
+const httpHeaders_1: HttpHeaders = new HttpHeaders().set("accept", "application/json");
+```
+
+更多 HttpHeaders 類別的方法參考 https://angular.io/api/common/http/HttpHeaders。
+
+
+
+
+## Make HTTP Get Request and Read Response
+
+### Get Request Options
+呼叫 HttpClient.get() 方法執行請求時可以提供 `options` 設定呼叫時的行為。
+
+`options` 的定義如下:
+```typescript
+options: {
+    headers?: HttpHeaders | {[header: string]: string | string[]},
+    observe?: 'body' | 'events' | 'response',
+    params?: HttpParams|{[param: string]: string | string[]},
+    reportProgress?: boolean,
+    responseType?: 'arraybuffer'|'blob'|'json'|'text',
+    withCredentials?: boolean,
+  }
+```
+
+`observe` 及 `responseType` 用來控制使用的 `get()` 函數簽名, 稍後會討論。
+
+特別注意 `observe` 及 `responseType` 使用上的陷井。這兩個欄位的資料型態是列舉值中的一種, 不是 `string`。寫錯時, 會產生多載函數(Overloaded function)配對上的錯誤。
+
+錯誤的寫法:
+```typescript
+let options = {
+      headers: {'accept': "text/plain"},
+      observe: 'body' ,
+      responseType: 'text'
+    };
+```
+`observe` 及 `responseType` 欄位的資料型態會被推斷成 `string`。
+
+正確的寫法要加上 `as const`, 要求 TypeScript engine 不要將 `body` 或者 `text` 擴大推斷成為 `string`:
+
+```typescript
+let options = {
+      headers: {'accept': "text/plain"},
+      observe: 'body' as const ,
+      responseType: 'text' as const
+    };
+```
+
+進一步的討論參考:
+- *OBSERVE AND RESPONSE TYPES* section in https://angular.io/guide/http#requesting-a-typed-response
+- [Setting http option as &#x27;responseType: &#x27;text&#x27;&#x27; causes compile failure for a http post request with angular HttpClient | StackOverflow](https://stackoverflow.com/questions/62369090/setting-http-option-as-responsetype-text-causes-compile-failure-for-a-http)
+
+### HttpClient.get() 方法
+
+
+使用 `httpClient.get()` 提交請求的程式:
+
+```typescript
+public pingServer(): Observable<string> {
+    
+    let options = {
+      headers: {'accept': "text/plain"},
+      observe: 'body' as const ,
+      responseType: 'text' as const
+    };
+
+    return this.httpClient.get(this.endpointPing, options);
+  }
+```
+
+`httpClient.get()`的函數有兩個參數:
+- url: string - 接受請求的 url
+- options - 選項
+
+回傳值則依照多載函數配對的結果有所不同。依此例來說, 配對到的 get() 函數簽名為:
+
+```typescript
+get(url: string, 
+    options: { 
+      headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+      observe?: "body"; 
+      params?: HttpParams | { [param: string]: string | string[]; }; 
+      reportProgress?: boolean; 
+      responseType: "text"; 
+      withCredentials?: boolean; }
+  ):Observable<string>
+```
+
+使用上特別注意, `options` 的 `observe` 及 `responseType` 會決定 `get()` 的簽名。
+
+`options` 的 `observe` 預設值為 `body`; `responseType` 的預設值為 `json`。
+
+若呼叫 `get()` 時沒有提供 `options`, 配對的簽名為:
+
+```typescript
+// Overload #14
+// Constructs a GET request 
+// that interprets the body as a JSON object and returns the response body as a JSON object.
+
+get(url: string, 
+  options?: { 
+    headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+    observe?: "body"; 
+    params?: HttpParams | { [param: string]: string | string[]; }; 
+    reportProgress?: boolean; 
+    responseType?: "json"; 
+    withCredentials?: boolean; }
+  ): Observable<Object>
+```
+將 Response Body 視為 JSON 物件並回傳 `Observable<Object>`
+
+
+可以傳入要回傳的型別 `T` 做為型別參數, `get<T>()` 會自動將 `Object` 轉換成指定的型別。配對的函數簽名如下:
+
+```typescript
+// Overload #15
+// Constructs a GET request 
+// that interprets the body as a JSON object and returns the response body in a given type.
+
+get<T>(
+  url: string, 
+  options?: { 
+    headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+    observe?: "body";
+    params?: HttpParams | { [param: string]: string | string[]; }; 
+    reportProgress?: boolean; 
+    responseType?: "json"; 
+    withCredentials?: boolean; })
+  : Observable<T>
+```
+
+Ref: [HttpClient#get | Angular](https://angular.io/api/common/http/HttpClient#get)
+
+### HttpClient.get<T>() 方法
+
+函數簽名
+Constructs a GET request that interprets the body as a JSON object and returns the response body in a given type.
+```
+get<T>(url: string, 
+      options?: { headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+                  observe?: "body"; 
+                  params?: HttpParams | { [param: string]: string | string[]; }; 
+                  reportProgress?: boolean; 
+                  responseType?: "json"; 
+                  withCredentials?: boolean; }): Observable<T>
+```
+
+
+```typescript
+ /**
+   * 
+   * @param endpoint 
+   */
+  public findAllTyped(endpoint: string): Observable<Stock[]> {
+    interface OracleRestResponse {
+      items: StockJsonObj[];
+      first: object;
+    }
+    // Make request to get all rows
+    return this.httpClient
+      .get<OracleRestResponse>(endpoint, {headers: {accept: 'application/json'},
+                                               observe: 'body' as const,
+                                              responseType: 'json' as const})
+      .pipe(map( (body: OracleRestResponse) => {
+          return body.items.map( (item:StockJsonObj) => Stock.create(item)); 
+      }))
+}
+```
+
+
+## Make HTTP Post Request
+
+
+## 實作
+
+### 實作 1 在專案中設定 HTTP Client
+
+建立一個新專案:
+```
+ng new u12-course-practice
+```
+
+#### app.module.ts
+
+開啟 `src\app\app.module.ts`, 匯入 HttpClientModule
+
+![](img/u12-i01.png)
+
+
+#### app.component.ts
+
+開啟 `src\app\app.component.ts`。
+
+`AppComponent` 需實作 `OnInit` 介面的 `ngOnInit(): void` 方法:
+
+```typescript
+export class AppComponent implements OnInit {
+  ngOnInit(): void {
+  }
+}
+```
+
+在建構子注入 `HttpClient` 物件:
+```typescript
+constructor(private httpClient: HttpClient) {}
+```
+
+在 `AppComponent` 加入兩個成員欄位:
+```
+endpointPing = "http://163.17.9.165/ords/app109/stocks/ping";
+responseMessage$: Observable<string>;
+```
+
+建立 `pingServer()` 方法:
+
+```typescript
+public pingServer(): Observable<string> {
+    
+    let options = {
+      headers: {'accept': "text/plain"},
+      observe: 'body' as const ,
+      responseType: 'text' as const
+    };
+    return this.httpClient.get(this.endpointPing, options);
+  }
+```
+
+在建構子中初始 `responseMessage$` 欄位值:
+
+```typescript
+this.responseMessage$ = this.pingServer();
+```
+
+#### app.component.html
+
+接著要設定元件的樣版。
+
+開啟 `src\app\app.component.html`。
+
+加入以下的 codes:
+
+```html
+
+<p>Endpoint: {{this.endpointPing}}</p>
+<p>response result: {{ this.responseMessage$ | async }}</p>  
+```
+
+[`async` pipe](https://angular.io/api/common/AsyncPipe) 自動訂閱 `Observable<string>` 內容並顯示結果。
+
+#### 執行結果
+
+![](img/u12-i02.png)
+
+
+
+### 實作 2 取得 Server 端的股票資料
+
+Rest endpoint: `http://163.17.9.165/ords/app109/stocks/find`
+
+Response body:
+
+```json
+{
+    "items": [
+        {
+            "id": 1,
+            "name": "Test Stock Company",
+            "code": "TSC",
+            "price": 85,
+            "pre_price": 80
+        },
+        {
+            "id": 2,
+            "name": "Alice Stock Company",
+            "code": "ASC",
+            "price": 50,
+            "pre_price": 70
+        },
+        {
+            "id": 3,
+            "name": "The Dock Company",
+            "code": "TDC",
+            "price": 876,
+            "pre_price": 765
+        }
+    ],
+    "first": {
+        "$ref": "http://163.17.9.165/ords/app109/stocks/find"
+    }
+}
+```
+使用 Talend API Tester 
+
+
+#### `stock.ts` 建立 `Stock` 類別及其欄位及靜態方法
+
+建立 Stock entity
+```
+ng g class model/Stock
+```
+
+開啟 `src\app\model\stock.ts`。
+
+建立一個 `StockJsonObj` interface, 描述 Rest Response 中的股票結構:
+
+```typescript
+export interface StockJsonObj {
+    id: number;
+    name: string;
+    code: string;
+    price: number;
+    pre_price: number;
+}
+```
+介面中的欄位名稱要和 Rest Response 回覆的欄位名稱相同。
+
+
+為 `Stock` 建立具參數的建構子(Constructor), 讓 Angular 為其自動建立成員欄位:
+
+```typescript
+export class Stock {
+    constructor(
+        public id: number,
+        public name: string,
+        public code: string,
+        public price: number,
+        public previousPrice: number
+    ){}
+}
+```
+
+加入靜態方法, 將符合 `StockJsonObj` 特性的 JSON Object 產生出真正的 `Stock` 物件:
+
+```typescript
+/**
+     * Create a new Stock object from a Json Object.
+     * @param jsonObject 
+     */
+    static create(jsonObject: Stock): Stock {
+        let stock: Stock = new Stock(0, null, null, 0, 0);
+        stock.id = jsonObject.id;
+        stock.name = jsonObject.name;
+        stock.previousPrice = jsonObject.pre_price;
+        stock.price = jsonObject.price;
+        return stock;
+      }
+```
+
+觀念補充: [TypeScript: Structurally Typing](#structurally-typing)
+
+
+#### `app.component.ts` 建立方法向後端查詢股票資料
+
+開啟 `src\app\app.component.ts`。
+
+新增一個方法, 執行 Http Get 向後端伺服器取得所有的股票資料。
+此方法使用非同步(asynchronous)操作, 結果傳回 `Observable<Stock[]>` 型態的資料。
+
+```typescript
+public findAll(endpoint: string): Observable<Stock[]> {
+    // Interface
+    interface OracleRestResponse {
+      items: object[];
+      first: object;
+    }
+    // Make request to get all rows
+    return this.httpClient.get(endpoint, {headers: {accept: 'application/json'},
+                                               observe: 'body' as const,
+                                              responseType: 'json' as const})
+      .pipe(map( (body: OracleRestResponse) => {
+          return body.items.map( (item: StockJsonObj)  => Stock.create(item) );
+      }));
+  }
+```
+
+觀念補充: [TypeScript: Interface 為物件結構命名](#interface-為物件結構命名)
+
+
+之後, 再建立:
+- 一個類別成員欄位, 儲存 Rest endpoint
+- 一個類別成員欄位, 儲存 REST 查詢回傳的結果
+- 一個 Action method, 點擊樣版上的按鈕後要執行的方法
+
+```typescript
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+
+  endpointPing = 'http://163.17.9.165/ords/app109/stocks/ping';
+  endpointFindAll = 'http://163.17.9.165/ords/app109/stocks/find';
+  
+  // ...
+
+  // response - stock[]
+  responseStocks$: Observable<Stock[]>;
+
+  // ...
+
+  public findAllAction(){
+    this.responseStocks$ =  this.findAll(this.endpointFindAll);
+  }
+```
+
+#### `app.component.html` 在樣版顯示 HTTP GET 回傳的資料
+
+
+```html
+<button (click)="this.findAllAction()">Find all stocks</button>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>CODE</th>
+    <th>Stock Name</th>
+    <th>Price</th>
+    <th>Previous Price</th>
+  </tr>
+  <tr *ngFor="let stock of this.responseStocks$ | async ">
+    <td> {{stock.id}} </td>
+    <td> {{stock.code}} </td>
+    <td> {{stock.name}} </td>
+    <td> {{stock.price}} </td>
+    <td> {{stock.previousPrice}} </td>
+  </tr>
+</table>
+```
+
+`async` pipe 顯示非同步操作的結果。async pipe (非同步管道) 訂閱 Observable 物件並返回其發出的最新值。
+Ref: [AsyncPipe | Angular](https://angular.io/api/common/AsyncPipe)
+
+執行結果
+
+![](img/u12-i03.png)
+
+
+## TypeScript 補充說明
+
+### Structurally Typing
+
+TypeScript 是一種 Structurally Typed 語言, 只要兩個物件的特性(property)相同, 不管物件的名稱, 這兩個都是相同的物件。
+TypeScript 只在乎物件的結構, 不關心物件的名稱。
+
+Example:
+```typescript
+// Codes inspired by codes in P25 in Boris Cherny, Programming TyypeScript, Oreilly, 2019.
+
+// 建立一個 Person Class
+
+class Person {
+  constructor(public firstName, public lastName) {}
+}
+
+// 建立一個函數, 印出 Person 的姓和名
+
+function whoAreYou(person: Person) {
+  console.log("I am", person.firstName, " ", person.lastName);
+}
+
+// 建立一個 object, 但沒有名稱
+
+let c = {
+  firstName: "John",
+  lastName: "Barrowman"
+};
+// 建立一個 Person object
+let person = new Person("Jason", "Bourne");
+
+// 判斷物件的型態
+console.log(person instanceof Person); // true
+console.log(c instanceof Person); // false
+
+// 印出姓和名
+whoAreYou(person); // I am Jason Bourne
+whoAreYou(c); // I am John Barrowman
+```
+
+[Codes at StackBlitz](https://stackblitz.com/edit/typescript-gxqqhg?file=index.ts)
+
+## Interface 為物件結構命名。
+
+使用 `interface` 為物件的結構命名.
+之後, 可以利用 `interface` 做物件結構的檢查。
+
+
+```typescript
+interface Person {
+  firstName: string;
+  lastName: string;
+}
+
+// 建立一個函數, 印出 Person 的姓和名
+
+function whoAreYou(person: Person) {
+  console.log("I am", person.firstName, " ", person.lastName);
+}
+
+// 建立一個 object, 但沒有名稱
+
+let person = {
+  firstName: "John",
+  lastName: "Barrowman"
+};
+
+let robot = {
+  serialID: "asd123",
+  flyingFeature: true
+};
+
+// 印出姓和名
+whoAreYou(person); // I am Jason Bourne
+
+// TypeScript 找出參數型別錯誤
+// Argument of type '{ serialID: string; flyingFeature: boolean; }' is not assignable to parameter of type 'Person'.
+//   Type '{ serialID: string; flyingFeature: boolean; }' is missing the following properties from type 'Person': firstName, lastName(2345)
+whoAreYou(robot);  // I am undefined undefined
+```
+
