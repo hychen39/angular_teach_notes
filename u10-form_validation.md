@@ -11,7 +11,7 @@
 
 ## Angular 表單驗證
 
-Angular 擴充 HTML 的原生表單驗證規則, 參考 [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation)
+Angular 擴充 HTML 的原生表單驗證規則, 參考 [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation) 或者 [Required Input 範例 | W3School](https://www.w3schools.com/html/html_form_attributes.asp)。
 
 例如, 加上 `required` 屬性成為必要輸入欄位
 
@@ -22,11 +22,11 @@ Angular 擴充 HTML 的原生表單驗證規則, 參考 [Constraint validation](
 
 Angular 為表單 `<form>` 及其內部的控制項 `<input>` 建立相對應的指令(directive), 以進行:
 1. 表單資料與元件特性間的自動同步
-2. 表單控制項狀態控制、取得驗證錯誤訊息及使用自訂驗證器
+2. 表單中的控制項狀態控制、取得驗證錯誤訊息及使用自訂驗證器
 3. 表單狀態控制及取得驗證錯誤訊息
 
 
-## 範本驅動式表單驗證的重要指令(directive)
+## 範本驅動式表單驗證的重要樣版指令(directive)
 
 這些指令定義於 `FormsModule`, 使用前要匯入專案中。
 
@@ -51,6 +51,7 @@ Angular 為表單 `<form>` 及其內部的控制項 `<input>` 建立相對應的
 
 
 ![](img/u10-i01.png)
+
 Src: https://www.ryadel.com/en/angular-forms-template-driven-model-driven-reactive-pros-cons-tutorial-guide/
 
 ## 控制項的狀態及 CSS 樣式
@@ -183,13 +184,15 @@ Angular 內建的驗證規則, 參考 https://angular.io/api/forms/Validators
 </div>
 ```
 
-NgForm 的參考變數也可以傳入元件的方法内在元件端處理，讓我們在處理 submit event 時取得表單的狀態及內容，參考 https://angular.io/api/forms/NgForm#listening-for-form-submission
+`NgForm` 的參考變數也可以傳入元件的方法内在元件端處理，讓我們在處理 submit event 時取得表單的狀態及內容，參考 https://angular.io/api/forms/NgForm#listening-for-form-submission
 
 ## 實作
 
 ### 需求
 
 ![](img/u10-i06.png)
+
+表單欄位驗證規則:
 
 欄位 | 驗證規則 | 錯誤訊息
 --|--|--

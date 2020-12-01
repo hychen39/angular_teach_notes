@@ -287,6 +287,7 @@ get<T>(url: string,
 ## Make HTTP Post Request
 
 
+
 ## 實作
 
 ### 實作 1 在專案中設定 HTTP Client
@@ -549,6 +550,10 @@ Ref: [AsyncPipe | Angular](https://angular.io/api/common/AsyncPipe)
 執行結果
 
 ![](img/u12-i03.png)
+
+
+### 實作 3: 將資料, 透過 HTTP Post 方式, 儲存到後端資料庫。
+
 
 
 ## TypeScript 補充說明
