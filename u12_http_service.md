@@ -1,17 +1,26 @@
 # Unit 12 使用 HTTP 與 Server 互動  
 
+## 簡介
+
+本章介紹使用 Restful Web Service 與後端 Server 互動所需要的基本 API 觀念及操作, 包括:
+- JSON 字串解析
+- 物件的 JSON 字串化
+- Angular HttpClient Service 
+- 設定 HttpRequest Header
+- 提出 Get 及 Post Request
+
 ## JSON 的字串解析(parsing)及物件的字串化
 
-JSON parsing (字串解析): JSON 字串轉成 JSON 物件
+JSON parsing (字串解析): JSON 字串轉成 JSON 物件。
 
-JSON serialization (物件字串化): JSON 物件轉成字串表示式
-
+JSON serialization (物件字串化/序列化): JSON 物件轉成字串表示式。
 
 ECMAScript 5 提供 `JSON` 類別處理 JSON.
 - `JSON.parsing()`: JSON 字串轉成 JSON 物件
 - `JSON.stringify()`: JSON 物件轉成字串表示式
 
-Parsing 範例: 
+Json parsing 及 serializing 範例: 
+[Source Codes | Stackblitz](https://stackblitz.com/edit/json-parsing-serialization?file=index.ts)
 ```typescript
 // Import stylesheets
 import "./style.css";
@@ -57,16 +66,14 @@ bookCopy.edition = 4
 bookCopy.year = 2017
 ```
 
-[Source Codes | Stackblitz](https://stackblitz.com/edit/json-parsing-serialization?file=index.ts)
-
 
 ## HTTPClient Service
 
-`HTTPClient` Service 負責非同步 HTTP 請求
+`HTTPClient` Service 
+- 負責非同步 HTTP 請求
+- 在 `HTTPClientModule` 定義
+- 交易結果皆為 RxJS `Observables` 為非同部結果
 
-`HTTPClient` Service 在 `HTTPClientModule` 定義
-
-`HTTPClient` Service 的交易結果皆為 RxJS `Observables`
 
 ## Setup for server communication
 
@@ -324,7 +331,7 @@ constructor(private httpClient: HttpClient) {}
 
 在 `AppComponent` 加入兩個成員欄位:
 ```
-endpointPing = "http://163.17.9.165/ords/app109/stocks/ping";
+endpointPing = "http://hostname/ords/app109/stocks/ping";
 responseMessage$: Observable<string>;
 ```
 
@@ -372,7 +379,7 @@ this.responseMessage$ = this.pingServer();
 
 ### 實作 2 取得 Server 端的股票資料
 
-Rest endpoint: `http://163.17.9.165/ords/app109/stocks/find`
+Rest endpoint: `http://hostname/ords/app109/stocks/find`
 
 Response body:
 
@@ -402,7 +409,7 @@ Response body:
         }
     ],
     "first": {
-        "$ref": "http://163.17.9.165/ords/app109/stocks/find"
+        "$ref": "http://hostname/ords/app109/stocks/find"
     }
 }
 ```
@@ -506,8 +513,8 @@ public findAll(endpoint: string): Observable<Stock[]> {
 })
 export class AppComponent implements OnInit {
 
-  endpointPing = 'http://163.17.9.165/ords/app109/stocks/ping';
-  endpointFindAll = 'http://163.17.9.165/ords/app109/stocks/find';
+  endpointPing = 'http://hostname/ords/app109/stocks/ping';
+  endpointFindAll = 'http://hostname/ords/app109/stocks/find';
   
   // ...
 
@@ -554,6 +561,93 @@ Ref: [AsyncPipe | Angular](https://angular.io/api/common/AsyncPipe)
 
 ### 實作 3: 將資料, 透過 HTTP Post 方式, 儲存到後端資料庫。
 
+Post endpoint: http://hostname/ords/app109/stocks/create
+
+testing data
+
+```json
+{
+  "name" : "Test stock1",
+  "code" : "TS1",
+  "price": 100,
+  "previousPrice": 150
+}
+```
+
+Response Data
+```json
+{
+  "stockId": number
+}
+```
+
+#### 在 `app.component.ts` 加入新的方法
+
+建立方法, 執行 HTTP Post, 將傳入的 Stock 物件儲存到後端資料庫中。
+
+開啟 `src\app\app.component.ts`, 建立以下方法
+```typescript
+ /**
+   * 將 Stock Object 存到遠端的資料庫。
+   * 使用 Http Post 方法。
+   *
+   * @param stock Stock to be posted.
+   * @param endpoint Rest endpoint for Http Post.
+   * @return ID:number for the stock object in the DB Table.
+   */
+  public saveRemote(endPoint: string, stock: Stock): Observable< string | number> {
+      //#1
+      interface PostResponse {
+        stockId: number;
+      }
+      //#2
+      return this.httpClient.post<PostResponse>(this.endpointPost, stock,
+        {headers: { 'Content-Type': 'application/json'}})
+        //#3
+        .pipe( map((response: PostResponse) => response.stockId ),
+        //#4
+          catchError( err => of('Caught: ${err}' )));
+    }
+}
+```
+說明:
+1. 建立一個 interface `PostResponse`, 說明 Response 的 JSON 內容中有那些欄位。
+2. 呼叫 `httpClient.post<T>()` 執行 POST Request。
+   - 第一個參數為 rest endpoint
+   - 第二個參數為要儲存的 Stock 物件
+   - 第三個參數為執行時的選項，設定 Request Header 中的 `Content-Type` 為 `application/json`
+3. `post()`方法回傳的結果為 `Observable<PostResponse>`.
+   - 使用 `map()` 轉換內容, 取出 Stock 物件在資料庫中被儲存時使用的 ID.
+   - Rxjs 的 `map()`說明參考 [map | operators | RxJS](https://rxjs-dev.firebaseapp.com/api/operators/map)
+4. `catchError()` operator 可以在非同步處理發生錯誤時, 提供替代的 Observable, 用以顯示錯誤訊息或其它後續處理。Rxjs 的 `catchError()` 說明參考 [RxJs Error Handling: Complete Practical Guide](https://blog.angular-university.io/rxjs-error-handling/).
+
+同樣在 AppComponent 建立一個方法, 使用者按下按鈕後執行該方法。此方法會呼叫 `saveRemote()` 將 Stock 物件存入到後端系統。回傳的非同部結果會更新 `AppComponent` 的 `postResponse$` 特性:
+
+```typescript
+public postAction(){
+    const stock = new Stock(0, 'Stock01', 'S01', 100 , 150 );
+    this.postResponse$ = this.saveRemote(this.endpointPost, stock);
+}
+```
+
+#### 修改 `app.component.html`
+
+開啟 `src\app\app.component.html`, 加入以下的程式碼:
+
+```html
+<!-- #1 -->
+<button (click)="this.postAction()">Post a stock</button>
+<p>
+  <!-- 2 -->
+  Response: {{this.postResponse$ | async}}
+</p>
+```
+1. 點擊 `Post a stock` 按鈕會呼叫執行 `postAction()` 。
+2. 執行的非同步結果使用 `async pipe` 來顯示。
+
+執行結果如下:
+
+![](img/u12-i04.png)
 
 
 ## TypeScript 補充說明
@@ -599,7 +693,7 @@ whoAreYou(c); // I am John Barrowman
 
 [Codes at StackBlitz](https://stackblitz.com/edit/typescript-gxqqhg?file=index.ts)
 
-## Interface 為物件結構命名。
+### Interface 為物件結構命名。
 
 使用 `interface` 為物件的結構命名.
 之後, 可以利用 `interface` 做物件結構的檢查。
@@ -637,4 +731,35 @@ whoAreYou(person); // I am Jason Bourne
 //   Type '{ serialID: string; flyingFeature: boolean; }' is missing the following properties from type 'Person': firstName, lastName(2345)
 whoAreYou(robot);  // I am undefined undefined
 ```
+
+### Observable 為非同步執行的結果
+
+```typescript
+import { Observable, of } from "rxjs";
+import { reduce, delay } from "rxjs/operators";
+
+let source$;
+function sum(): Observable<number> {
+  source$ = of(1, 2, 3, 4).pipe(
+    delay(1000),
+    reduce((x, y) => x + y)
+  );
+  // #1
+  console.log("Executing sum()");
+  return source$;
+}
+
+sum();
+
+// #3
+source$.subscribe(console.log);
+// #2
+console.log("Hello");
+```
+
+試問, 執行的結果為何呢? 為什麼加總的結果最後才被印出來呢?
+
+![](img/u12-i05.png)
+
+
 
