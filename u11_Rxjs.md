@@ -2,11 +2,13 @@
 
 ## 什麼是 Reactive Programming
 
-Reactive Programming (回應式程式設計) , 是以非同步資料串流(asynchronous data stream)為形式的程式設計思維. 觀察者(Observer)透過訂閱者(Subscriber)訂閱一個可觀察的(Observable)物件, 可觀察的物件產生的資料會主動推向觀察者, 觀察者便可以即時的反應資料的變化. Ref:Ref: [Reactive programming - Wikipedia](https://en.wikipedia.org/wiki/Reactive_programming)
+Reactive Programming (回應式程式設計) , 是以非同步資料串流(asynchronous data stream)為形式的程式設計思維. 觀察者(Observer)透過訂閱可觀察的(Observable)物件, 成為該物件的訂閱者(Subscriber). 可觀察的物件產生的資料會主動推向訂閱者, 訂閱者便可以即時的反應資料的變化. Ref:Ref: [Reactive programming - Wikipedia](https://en.wikipedia.org/wiki/Reactive_programming)
 
 ![](https://res.cloudinary.com/practicaldev/image/fetch/s--HJ0-5sVo--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/7hevybycq37g57jgugx6.jpg)
 
 Figure Source: [Reactive Programming in JavaScript with RxJS.](https://dev.to/sagar/reactive-programming-in-javascript-with-rxjs-4jom)
+
+
 
 考慮底下的例子:
 ```
@@ -20,12 +22,16 @@ b 的值, 在命令式編程(imperative programming)的思維下, 為 6. 命令�
 
 當 a1 的值改變為 3 時, b 的值會是多少呢? 在命令式編程下, b 的值並不會改變, 因為 a1 的值改變後, 我們並沒有再次呼叫 `b = a1 + a2` 重新計算 b 的值.
 
-回應式程式設計思維用不同的角度看 `b = a1 + a2`. `a1 + a2` 可視為一個可觀察的物件, 當有異動時, 運算的結果會自動送出(emit). `b` 是一個觀察者, 對 `a1 + a2` 運算結果有興趣. `=` 是訂閱者, 將觀察者和可觀察物件繫結在一起. 所以, 當 `a1` 的值變成為 3 時, `b` 的值自動變成 `7`, 我們不用再次呼叫 `b = a1 + a2` 進行計算.
+回應式程式設計思維用不同的角度看 `b = a1 + a2`. `a1 + a2` 可視為一個可觀察的物件, 當有異動時, 運算的結果會自動送出(emit). `b` 是一個觀察者, 對 `a1 + a2` 運算結果有興趣. `=` 是訂閱動作, 將觀察者和可觀察物件繫結在一起, 讓觀查者變成訂閱者. 所以, 當 `a1` 的值變成為 3 時, `b` 的值自動變成 `7`, 我們不用再次呼叫 `b = a1 + a2` 進行計算.
 
-Reactive Programming 可以讓應用程式具備事件導向式處理能力, 在其中事件串流被主動推送到訂閱者, 由其觀察並處理事件.
+Reactive Programming 可以讓應用程式具備非同步處理的能力, 或者事件導向式處理能力, 事件串流被主動推送到訂閱者處理事件.
 
-應用舉例: GUI 的 MVC 模型, 當 Model 的資料有異動時, View 會自動的更新. 
-
+應用舉例: 
+- GUI 的 MVC 模型, 當 Model 的資料有異動時, View 會自動的更新. 
+- 另一個最常見的例子是對後端提出 http request。Http Response 的等待時間受到眾多因素影響。
+在 Reactive Programming 的思維下, 提出 Http Request 之後, 我們可以訂閱 Response 的結果。
+Response 回來後, Response 的內容會直接推送給訂閱者。 在等待資料推送的過程中, 程式執行緒並不會被卡住, 可以執行其它程式。
+換句話說, 程式不會因網路速度慢而造成 UI 的凍結。
 
 
 ## RxJS 術語(terminology)與舉例
@@ -43,16 +49,18 @@ Reactive Programming 的思維下,
 - Observer: 對 Observable 進行訂閱, 印出得到的數字
 - Subscription: 描述 Observable 及 Observable 間的關係, 提供 unsubscribe() 取消訂閱, 結束關係。
 
+Demo [u11-ex1 | StackBlitz](https://stackblitz.com/edit/u11-ex1?file=index.ts)
+
 ```typescript
-import { interval, Observer, of, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { interval, Observer, Subscription } from "rxjs";
 
 // Observable 可觀察串流
-const source = interval(1000);
+const source$ = interval(1000);
 
-// Observer 觀察者
+// Observer 觀察者. 
+// <T> 指定可處理的資料型態
 let myObserver: Observer<number> = {
-    // 取得下個數字後的處理方法
+  // 取得下個數字後的處理方法
   next: value => console.log(value),
   // 發生錯誤時的處理方法
   error: err => console.log(err),
@@ -61,7 +69,7 @@ let myObserver: Observer<number> = {
 };
 
 // 建立訂閱關係
-const subscription: Subscription = source.subscribe(myObserver);
+const subscription: Subscription = source$.subscribe(myObserver);
 
 // 5 秒後, 結束訂閱關係
 setTimeout(() => {
@@ -70,19 +78,37 @@ setTimeout(() => {
 }, 5000);
 ```
 
+Observable 物件提供 `subscribe()` 以訂閱該可觀察物件, 該方法的簽名如下:
+
+```
+subscribe(observer?: PartialObserver<T>): Subscription
+```
+Src: [Observable.subscribe() | RxJS](https://rxjs-dev.firebaseapp.com/api/index/class/Observable#subscribe-)
+
+此方法的另一個多載可以直接傳入 `next`, `error`, `complete`三方法的個函數:
+
+```
+subscribe(next: null, error: null, complete: () => void): Subscription
+```
+Src: [Observable.subscribe() | RxJS](https://rxjs-dev.firebaseapp.com/api/index/class/Observable#subscribe-)
+ 
+
 ## RxJS Play Ground
 
-StackBlitz
+[StackBlitz](https://stackblitz.com/) 提供線上撰寫 RxJS 的編輯器
+
 ![](img/u11-i01.png)
 ![](img/u11-i02.png)
 
 ## 訂閱 Observable: Observer 的建立
 
 
-觀察者只是具有三個回呼方法(callbacks)的物件，每一個回呼方法對應到 Observable 可能傳遞的通知類型: 
-- next: Observable 將串流中的下一個元素推向 Observer, Observer 提供方法進行處理
-- error: 將錯誤訊息推向 Observer, Observer 提供方法進行處理
-- complete: 通知 Observer 串流資料全部輸出完成, Observer 提供方法進行處理。
+Observer (觀察者) 只是具有三個回呼方法(callbacks)的物件，每一個回呼方法對應到 Observable 可能傳遞的通知類型: 
+- `next`: Observable 將串流中的下一個元素推向 Observer, Observer 提供方法進行處理
+- `error`: 將錯誤訊息推向 Observer, Observer 提供方法進行處理
+- `complete`: 通知 Observer 串流資料全部輸出完成, Observer 提供方法進行處理。
+
+以下是 `Observer` 的介面定義:
 
 ```typescript
 interface Observer<T> {
@@ -93,9 +119,14 @@ interface Observer<T> {
 }
 ```
 
-參考: [Observer Interface](https://rxjs-dev.firebaseapp.com/api/index/interface/Observer)
+參考: [Observer Interface | rxjs-dev](https://rxjs-dev.firebaseapp.com/api/index/interface/Observer)
 
+再看另外一個例子。
 
+這個例子將陣列資料轉成非同步的資料 `Observable<string>`。
+此外, 在訂閱時, 可以傳入具有名稱的 Observer: `myObserver` 或者不具名的 Observer 物件。
+
+Demo code [u11-ex2 | StackBlitz](https://stackblitz.com/edit/u11-ex2?file=index.ts)
 ```typescript
 import { from, Observer, of, Subscription, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -109,10 +140,11 @@ let myObserver: Observer<string> = {
   complete: () => console.log('所有的朋友都來了!!')
 };
 
-// 向 Observable 進行訂閱, 訂閱時傳入 Observer
+// 使用 from 運算子將陣例轉成 Observable 資料
+// 向 Observable 進行訂閱, 訂閱時傳入有名稱的 Observer
 from(disneyFriends).subscribe(myObserver);
 
-// 使用 implicit object
+// 使用不具名的 Observer 物件
 from(disneyFriends).subscribe( {
   next: friend => console.log(friend, ' bye bye'),
   error: err => console.log(err),
@@ -123,9 +155,10 @@ from(disneyFriends).subscribe( {
 
 ## Observable 的建立
 
-有數種方式可以建立 Observable stream。
+有數種方式可以將一般的資料建立成 Observable Stream Data。
 
 ### `of()` RxJS function
+
 使用 `of()` 將一連串的數字轉成串流:
 
 ```typescript
@@ -172,6 +205,7 @@ Creates an Observable that emits sequential numbers every specified interval of 
 
 ![](https://rxjs-dev.firebaseapp.com/assets/images/marble-diagrams/interval.png)
 
+底下的例子取出前 5 個數字後即停止:
 
 ```typescript
 import { from, Observer, of, Subscription, Observable, interval } from "rxjs";
@@ -193,8 +227,10 @@ take5Elements.subscribe( x => console.log(x));
 
 使用 `Observable` 的建構子建立 `Observable` 物件。
 
-建立時, 要傳入 `Observer` 物件, `Observable` 物件會呼叫 `Observer` 物件的 `next()`, `error()`, 及 `complete()` 方法。
+建立時, 要傳入方法, 該方法的參數為具 `Observer` 介面的物件。
+此方法會呼叫傳入的 `Observer` 物件的 `next()`, `error()`, 及 `complete()` 方法。
 
+Demo Code [u11-ex3 | StackBlitz](https://stackblitz.com/edit/u11-ex3?file=index.ts)
 ```typescript
 import { from, Observer, of, Subscription, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -207,8 +243,10 @@ const myObservable = new Observable( function subscribe(subscriber){
   // subscriber is a observer
   const myArray = ['A1', 'B1', 'C1', 'D1', 'E1'];
   myArray.forEach( (element) => {
+    // 呼叫 observable.next() 處理陣列中的元素
     subscriber.next(element);
   })
+  // 完成後, 呼叫 observable.complete()
   subscriber.complete();
 });
 

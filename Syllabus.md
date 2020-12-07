@@ -48,9 +48,9 @@
 
 [Unit 10 範本驅動表單驗證](./u10-form_validation.md)
 
-[Unit 11 RxJS (1): Observable, Observer, and Subscriber (In Progress)](./u11_Rxjs.md)
+[Unit 11 RxJS (1): Observable, Observer, and Subscriber](./u11_Rxjs.md)
 
-[Unit 12 與 Server 互動: 使用 HTTP (TBD) ]
+[Unit 12 與 Server 互動: 使用 HTTP ](./u12_http_service.md)
 - JSON Parsing and serialization
 - HttpClient Service
 - Read data from the server
