@@ -325,11 +325,13 @@ const source$ = of(1,2,3).pipe(
 ```
 
 **Pipeable Operator 的類型**
+
 Pipeable operator 的類型為: creation (建立), transformation(轉換), filtering(過濾), joining(串接), multicasting(群播), error handling(錯誤處理), utility(工具), etc.
 
 完整的類型請參考: [Categories of operators 小節 | RxJS](https://rxjs-dev.firebaseapp.com/guide/operators)
 
 **marble diagram (彈珠圖)**
+
 marble diagram (彈珠圖)常用來圖示 Pipeable operator 的元素操作。
 [RxMarbles: Interactive diagrams of Rx Observables](https://rxmarbles.com/#map) 提供各類 operators 的 marble diagram (彈珠圖)。
 
@@ -344,14 +346,17 @@ Marble Diagram 的閱讀方式:
 #### FILTERING OPERATORS (過濾運算子)
 
 ##### Filter Operator
-[filter](https://rxjs-dev.firebaseapp.com/api/operators/filter)
+
+[`filter`](https://rxjs-dev.firebaseapp.com/api/operators/filter)
+
 ![](img/u11-i07.png)
 
+`filter` 的簽名為:
 ```typescript
 filter<T>(predicate: (value: T, index: number) => boolean, thisArg?: any): MonoTypeOperatorFunction<T>
 ```
 
-傳入一個方法判斷元素為 true or false. 該方法接受二個參數的輸入:
+傳入一個 `predicate` 方法判斷元素為 true or false. 該方法接受二個參數的輸入:
 - value: T - 元素值, 型態為 T
 - index: number - 表示為第幾個元素
 
