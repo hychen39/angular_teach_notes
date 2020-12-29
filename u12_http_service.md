@@ -145,9 +145,9 @@ options: {
   }
 ```
 
-`observe` 及 `responseType` 用來控制使用的 `get()` 函數簽名, 稍後會討論。
+`observe` 及 `responseType` 用來控制使用那一個 `httpClient.get` 函數簽名, 稍後詳細討論。
 
-特別注意 `observe` 及 `responseType` 使用上的陷井。這兩個欄位的資料型態是列舉值中的一種, 不是 `string`。寫錯時, 會產生多載函數(Overloaded function)配對上的錯誤。
+特別注意 `observe` 及 `responseType` 使用上的陷井。這兩個欄位的資料型態是**列舉值**中的一種, 不是 `string`。寫錯時, 會產生多載函數(Overloaded function)配對上的錯誤。
 
 錯誤的寫法:
 ```typescript
@@ -195,7 +195,7 @@ public pingServer(): Observable<string> {
 - url: string - 接受請求的 url
 - options - 選項
 
-回傳值則依照多載函數配對的結果有所不同。依此例來說, 配對到的 get() 函數簽名為:
+回傳值則依照多載函數配對的結果有所不同。依此例來說, 配對到的 `httpClient.get()` 函數簽名為:
 
 ```typescript
 get(url: string, 
@@ -211,7 +211,7 @@ get(url: string,
 
 使用上特別注意, `options` 的 `observe` 及 `responseType` 會決定 `get()` 的簽名。
 
-`options` 的 `observe` 預設值為 `body`; `responseType` 的預設值為 `json`。
+`observe` 預設值為 `body`; `responseType` 的預設值為 `json`。
 
 若呼叫 `get()` 時沒有提供 `options`, 配對的簽名為:
 
@@ -232,8 +232,13 @@ get(url: string,
 ```
 將 Response Body 視為 JSON 物件並回傳 `Observable<Object>`
 
+### HttpClient.get<T>() 方法
 
-可以傳入要回傳的型別 `T` 做為型別參數, `get<T>()` 會自動將 `Object` 轉換成指定的型別。配對的函數簽名如下:
+[實作 2](#實作-2-取得-server-端的股票資料)
+
+**具型別參數的 get()**
+
+可以傳入要回傳的型別 `T` 做為型別參數, `get<T>()` 會自動將回傳的 `Object` 轉換成指定的型別。配對的函數簽名如下:
 
 ```typescript
 // Overload #15
@@ -254,37 +259,32 @@ get<T>(
 
 Ref: [HttpClient#get | Angular](https://angular.io/api/common/http/HttpClient#get)
 
-### HttpClient.get<T>() 方法
 
-函數簽名
-Constructs a GET request that interprets the body as a JSON object and returns the response body in a given type.
-```
-get<T>(url: string, 
-      options?: { headers?: HttpHeaders | { [header: string]: string | string[]; }; 
-                  observe?: "body"; 
-                  params?: HttpParams | { [param: string]: string | string[]; }; 
-                  reportProgress?: boolean; 
-                  responseType?: "json"; 
-                  withCredentials?: boolean; }): Observable<T>
-```
+以下示範 `HttpClient.get<T>()` 的使用。
 
+定義介面 `OracleRestResponse`, 在呼叫 `HttpClient.get<T>()` 時傳此介面作為型態參數, 所以 `get<OracleRestResponse>()` 回傳的資料型態為 `OracleRestResponse`
+
+`findAllTyped()` 方法的規格中, 回傳資料型態為 `Stock[]`, 所以必須使用 `map()` 把 `OracleRestResponse` 轉換成 `Stock[]`.
 
 ```typescript
  /**
-   * 
    * @param endpoint 
    */
   public findAllTyped(endpoint: string): Observable<Stock[]> {
+    // 介面定義
     interface OracleRestResponse {
-      items: StockJsonObj[];
+      items: StockJsonObj[];   // Server 回覆的 Stock 物件
       first: object;
     }
     // Make request to get all rows
+    // 注意, 型態由 OracleRestResponse 轉換成 Stock[]
     return this.httpClient
       .get<OracleRestResponse>(endpoint, {headers: {accept: 'application/json'},
                                                observe: 'body' as const,
                                               responseType: 'json' as const})
       .pipe(map( (body: OracleRestResponse) => {
+          // 針對 Array 中的每一個元素做轉換, 回傳的仍是 Array, 只是元素內容不同。
+          // 回傳 Stock[]
           return body.items.map( (item:StockJsonObj) => Stock.create(item)); 
       }))
 }
@@ -293,7 +293,28 @@ get<T>(url: string,
 
 ## Make HTTP Post Request
 
+使用 `httpClient.post():Observable` 執行 Http Post 操作. 此方法共有多載(overloading) 15 個簽名。
 
+`httpClient.post<T>():Observable<T>` 為使用參數型態的簽名, 回傳值是同一參數型態的 `Observable`, 完整的規格:
+
+```typescript
+post<T>( url: string, 
+         body: any, 
+         options?: {  headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+                      observe?: "body"; 
+                      params?: HttpParams | { [param: string]: string | string[]; }; 
+                      reportProgress?: boolean; 
+                      responseType?: "json"; 
+                      withCredentials?: boolean; }
+        ): Observable<T>
+```
+
+注意: `options` 中的 `observe` 及 `responseType` 會決定多載函數的簽名。
+
+[實作 3](#實作-3-將資料-透過-http-post-方式-儲存到後端資料庫)
+
+參考:
+- [HttpClient.post() | Angular](https://angular.io/api/common/http/HttpClient#post)
 
 ## 實作
 
@@ -379,9 +400,18 @@ this.responseMessage$ = this.pingServer();
 
 ### 實作 2 取得 Server 端的股票資料
 
-Rest endpoint: `http://hostname/ords/app109/stocks/find`
 
-Response body:
+向 Rest endpoint: `http://hostname/ords/app109/stocks/find` 提出請求。
+
+回覆的 Response body 格式
+
+```json
+{
+  "items": Object[],  // 回傳的內容
+  "first": object     // 查詢的 url
+}
+
+```
 
 ```json
 {
@@ -413,19 +443,21 @@ Response body:
     }
 }
 ```
-使用 Talend API Tester 
+
+使用 Talend API Tester (Chrome plugin) 測試 Restful endpoint.
+
 
 
 #### `stock.ts` 建立 `Stock` 類別及其欄位及靜態方法
 
-建立 Stock entity
+建立 Stock entity 做為資料模型:
 ```
 ng g class model/Stock
 ```
 
 開啟 `src\app\model\stock.ts`。
 
-建立一個 `StockJsonObj` interface, 描述 Rest Response 中的股票結構:
+建立一個 `StockJsonObj` interface, 描述 Rest Response 中的 以 JSON 格式描述的股票物件:
 
 ```typescript
 export interface StockJsonObj {
@@ -453,7 +485,7 @@ export class Stock {
 }
 ```
 
-加入靜態方法, 將符合 `StockJsonObj` 特性的 JSON Object 產生出真正的 `Stock` 物件:
+加入靜態方法, 將符合 `StockJsonObj` 介面的 JSON Object 產生出真正的 `Stock` 物件:
 
 ```typescript
 /**
@@ -580,6 +612,8 @@ Response Data
   "stockId": number
 }
 ```
+
+執行前可使用 Talend API Tester 先測試。
 
 #### 在 `app.component.ts` 加入新的方法
 
