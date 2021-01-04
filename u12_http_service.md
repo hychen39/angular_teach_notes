@@ -232,9 +232,9 @@ get(url: string,
 ```
 將 Response Body 視為 JSON 物件並回傳 `Observable<Object>`
 
-### HttpClient.get<T>() 方法
+### `HttpClient.get<T>()` 方法
 
-[實作 2](#實作-2-取得-server-端的股票資料)
+
 
 **具型別參數的 get()**
 
@@ -262,9 +262,11 @@ Ref: [HttpClient#get | Angular](https://angular.io/api/common/http/HttpClient#ge
 
 以下示範 `HttpClient.get<T>()` 的使用。
 
-定義介面 `OracleRestResponse`, 在呼叫 `HttpClient.get<T>()` 時傳此介面作為型態參數, 所以 `get<OracleRestResponse>()` 回傳的資料型態為 `OracleRestResponse`
+定義介面 `OracleRestResponse`, 用以表示後端回傳回來的 Response 的內容, 詳細格式參考 [實作2](#實作-2-取得-server-端的股票資料)。
 
-`findAllTyped()` 方法的規格中, 回傳資料型態為 `Stock[]`, 所以必須使用 `map()` 把 `OracleRestResponse` 轉換成 `Stock[]`.
+在呼叫 `HttpClient.get<T>()` 時傳此介面作為型態參數, 所以 `get<OracleRestResponse>()` 回傳的資料型態為 `OracleRestResponse`。
+
+底下程式碼 `findAllTyped()` 方法的規格中, 回傳資料型態為 `Stock[]`, 所以必須使用 `map()` 把 `OracleRestResponse` 轉換成 `Stock[]`.
 
 ```typescript
  /**
@@ -290,6 +292,7 @@ Ref: [HttpClient#get | Angular](https://angular.io/api/common/http/HttpClient#ge
 }
 ```
 
+[實作 2](#實作-2-取得-server-端的股票資料)
 
 ## Make HTTP Post Request
 
@@ -448,7 +451,7 @@ this.responseMessage$ = this.pingServer();
 
 
 
-#### `stock.ts` 建立 `Stock` 類別及其欄位及靜態方法
+#### 建立 `Stock` 類別及其欄位及靜態方法 ( `stock.ts` )
 
 建立 Stock entity 做為資料模型:
 ```
@@ -456,6 +459,7 @@ ng g class model/Stock
 ```
 
 開啟 `src\app\model\stock.ts`。
+
 
 建立一個 `StockJsonObj` interface, 描述 Rest Response 中的 以 JSON 格式描述的股票物件:
 
@@ -504,8 +508,45 @@ export class Stock {
 
 觀念補充: [TypeScript: Structurally Typing](#structurally-typing)
 
+完成的 `Stock` 類別:
 
-#### `app.component.ts` 建立方法向後端查詢股票資料
+```js
+export interface StockJsonObj {
+    id: number;
+    name: string;
+    code: string;
+    price: number;
+    pre_price: number;
+}
+
+export class Stock {
+    constructor(
+        public id: number,
+        public name: string,
+        public code: string,
+        public price: number,
+        public previousPrice: number
+    ){}
+
+
+    /**
+     * Create a new Stock object from a Json Object.
+     * @param jsonObject
+     */
+    static create(jsonObject: StockJsonObj): Stock {
+        const stock: Stock = new Stock(0, null, null, 0, 0);
+        stock.id = jsonObject.id;
+        stock.code = jsonObject.code;
+        stock.name = jsonObject.name;
+        stock.previousPrice = jsonObject.pre_price;
+        stock.price = jsonObject.price;
+        return stock;
+      }
+}
+
+```
+
+#### 建立方法向後端查詢股票資料 (`app.component.ts` )
 
 開啟 `src\app\app.component.ts`。
 
