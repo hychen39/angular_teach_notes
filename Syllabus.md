@@ -56,10 +56,12 @@
 - Read data from the server
 - Post data to the server
 
-[Unit 13 在導向中使用 Observables 及導向到子元件的 `<router-outlet>` (TBD)]
+[Unit 13 RWD Layout: 使用 Angular Flex](./u13_rwd_layout.md)
+
+[Unit XX 在導向中使用 Observables 及導向到子元件的 `<router-outlet>` (TBD)]
 - Observables and the router (Section 6.6)
 - Child route (Section 3.6)
 
-[Unit 14 Feature Module 及其導向]
+[Unit XX Feature Module 及其導向]
 - Section 2.5 Feature Module. [Feature Module | Angular](https://angular.tw/guide/feature-modules)
 - Section 4.2 Lazy-Loading modules. [Lazy-loading module | Angular](https://angular.tw/guide/lazy-loading-ngmodules)
