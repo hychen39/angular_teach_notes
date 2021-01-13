@@ -58,6 +58,8 @@ gdColumn.gt-sm="20% auto 20%"
 ```
 
 
+[實作 1 使用 Grid Directive 製作 RWD 版面](#實作-1-使用-grid-directive-製作-rwd-版面)
+
 ### 使用程式取得現在的螢幕寛度 `MediaObserver`
 
 Example:
@@ -86,6 +88,9 @@ export class GridLayoutComponent implements OnInit {
 
 Source: [JavaScript API (Imperative) | angular/flex-layout](https://github.com/angular/flex-layout/wiki/API-Documentation#javascript-api-imperative)
 
+
+[實作 2: 取得目前的螢幕度](#實作-2-取得目前的螢幕度)
+
 ## Flex Layout
 
 ![](https://css-tricks.com/wp-content/uploads/2018/11/00-basic-terminology.svg)
@@ -109,6 +114,9 @@ FlexLayout Directives Child Elements within Containers:
 - fxFlexFill 
 
 更多的 Flex-Layout directives 參考: [HTML API (Declarative) | angular/flex-layout](https://github.com/angular/flex-layout/wiki/API-Documentation#html-api-declarative)
+
+[實作 3: 使用 Flex-Box Layout 製作 RWD 佈局](#實作-3-使用-flex-box-layout-製作-rwd-佈局)
+
 
 ## 實作 1 使用 Grid Directive 製作 RWD 版面
 
@@ -462,7 +470,7 @@ Source: [angular/flex-layout](https://github.com/angular/flex-layout/wiki/MediaO
 ![](img/u13-i13.png)
 
 
-## 實作 3: 使用 Flex-Box Layout
+## 實作 3: 使用 Flex-Box Layout 製作 RWD 佈局
 
 ### 實作目標
 
