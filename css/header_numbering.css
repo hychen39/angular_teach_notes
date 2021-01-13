@@ -1,0 +1,39 @@
+/* Header Numbering */
+
+h1 {
+    counter-reset: h2ctr 0 step_ctr 0;
+    /* counter-reset: h2ctr;  */
+}
+
+/* h1:before {
+    counter-increment: h1ctr;
+    content: counter(h1ctr) ". ";
+} */
+
+h2 {
+    counter-reset: h3ctr;
+    counter-increment: h2ctr;
+    
+}
+
+h2::before {
+    /* content: counter(h1ctr) "." counter(h2ctr) " "; */
+    content: counter(h2ctr) ". ";
+}
+
+h3 {
+    counter-reset: h4ctr;
+}
+
+h3::before {
+    counter-increment: h3ctr;
+    /* content: counter(h1ctr) "." counter(h2ctr) "." counter(h3ctr) " "; */
+    content: counter(h2ctr) "." counter(h3ctr) " ";
+}
+
+/* h4 {
+    counter-increment: h4ctr;
+}
+h4::before {
+    content: "(" counter(h4ctr, lower-alpha) ") ";
+} */

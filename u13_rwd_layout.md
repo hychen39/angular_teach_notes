@@ -1,7 +1,8 @@
-# Unit 13 使用 Angular Flex-Layout 製作 RWD 版面布局
+# Unit 13 使用 Angular Flex-Layout 製作 RWD 版面佈局
 
 
 @import "css/images.css"
+@import "css/header_numbering.css"
 
 ## 簡介
 
@@ -86,6 +87,28 @@ export class GridLayoutComponent implements OnInit {
 Source: [JavaScript API (Imperative) | angular/flex-layout](https://github.com/angular/flex-layout/wiki/API-Documentation#javascript-api-imperative)
 
 ## Flex Layout
+
+![](https://css-tricks.com/wp-content/uploads/2018/11/00-basic-terminology.svg)
+
+Figure source: css-tricks.com
+
+Flexbox 的介紹, 參考 [A Complete Guide to Flexbox | CSS-Tricks](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+
+
+FlexLayout Directives for the Flex Container
+
+* fxLayout: Defines the flow order of child items within a flexbox container.
+* fxLayoutGap: Defines if child items within a flexbox container should have a gap
+* fxLayoutAlign: Defines how flexbox items are aligned according to both the main-axis and the cross-axis, within a flexbox container
+
+FlexLayout Directives Child Elements within Containers:
+- fxFlex 
+- fxFlexOrder 
+- fxFlexOffset 
+- fxFlexAlign 
+- fxFlexFill 
+
+更多的 Flex-Layout directives 參考: [HTML API (Declarative) | angular/flex-layout](https://github.com/angular/flex-layout/wiki/API-Documentation#html-api-declarative)
 
 ## 實作 1 使用 Grid Directive 製作 RWD 版面
 
@@ -330,6 +353,239 @@ gdAreas.xs="header  | sidebar | content | sidebar1 | footer"
     <div class='blocks footer' gdArea='footer'>Footer</div>
 </div>
 ```
+
+## 實作 2: 取得目前的螢幕度
+
+### 在元件中使用 `MediaObserver` 
+
+建立新元件 `view-port`
+
+```
+ng g c layout/view-port
+```
+
+匯入 `MediaObserver` 到元件中, 並從建構子參數中注入此服務:
+
+```js
+import { Component, OnInit } from '@angular/core';
+import {MediaObserver} from '@angular/flex-layout'
+
+/**
+ * 顯示目前的裝置的寬度
+ */
+@Component({
+  selector: 'app-view-port',
+  templateUrl: './view-port.component.html',
+  styleUrls: ['./view-port.component.css']
+})
+export class ViewPortComponent implements OnInit {
+
+  constructor(private mediaObserver: MediaObserver) { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+```
+
+### 使用 `MediaObserver` 取得目前的螢幕寬度
+
+新增類別欄位 `mediaAlias$`
+
+```js
+...
+export class ViewPortComponent implements OnInit {
+
+  public mediaAlias$: Observable<{ mqAlias: string, mediaQuery: string }>;
+
+  constructor(private mediaObserver: MediaObserver) { }
+  ...
+```
+
+`Observable` 內的資料型態為:
+```js 
+{ mqAlias: string, 
+  mediaQuery: string }
+```
+
+在 `ngOnInit()` 中, 取得螢幕寬度的別名(alias)及 media query 的結果:
+
+```js
+
+ngOnInit(): void {
+    this.mediaAlias$ = this.mediaObserver.asObservable()
+    .pipe(map((value: MediaChange[]) => {
+      return {
+        mqAlias: value[0].mqAlias,
+        mediaQuery: value[0].mediaQuery
+      }
+    }));
+  }
+```
+
+從 `MediaObserver` 取得的 `Observable` 內的資料型態為 `MediaChange[]`, 其第 0 個元素是目前螢幕寬度的資訊. 因此, 
+我們必須將 `MediaChange[0]` 轉成 :
+```js 
+{ mqAlias: string, 
+  mediaQuery: string }
+```
+
+[MediaChange](https://github.com/angular/flex-layout/wiki/MediaObserver#mediachange-class) is an object that contains details about a `mediaQuery` event. It has the following properties:
+
+- `matches` - whether the mediaQuery is currently activated, defaults to false
+- `mediaQuery` - e.g. (min-width: 600px) and (max-width: 959px), defaults to 'all'
+- `mqAlias` - e.g. gt-sm, md, gt-lg, defaults to ''
+- `suffix` - e.g. GtSM, Md, GtLg, defaults to ''
+  
+Source: [angular/flex-layout](https://github.com/angular/flex-layout/wiki/MediaObserver#mediachange-class)
+
+### 在樣版中顯示目前螢幕寛度
+
+開啟 `src\app\layout\view-port\view-port.component.html`, 輸入以下程式碼:
+
+```html
+<div>
+<p> Media Query: and {{(this.mediaAlias$ | async )?.mediaQuery }} </p>
+<p> Current Media size alias: <b> {{(this.mediaAlias$ | async)?.mqAlias }}  </b></p>
+</div>
+```
+
+### 在 `GridLayout` 樣板中使用 `ViewPort` 元件顯示螢幕寬度資訊
+
+開啟 `src\app\layout\grid-layout\grid-layout.component.html`, 加入以下的 codes:
+
+![](img/u13-i12.png)
+
+執行結果
+
+![](img/u13-i13.png)
+
+
+## 實作 3: 使用 Flex-Box Layout
+
+### 實作目標
+
+<div class="imgs">
+
+  ![](img/u13-i08.png)
+
+  ![](img/u13-i09.png)
+
+</div>
+
+
+<div class="imgs">
+  
+  ![](img/u13-i10.png)
+  
+  ![](img/u13-i11.png)
+
+</div>
+
+### 建立 `Card` 元件以卡片的方式顯示資訊
+
+```
+ng g component layout/card --module=app
+```
+
+設定元件的 CSS:
+
+```css
+:host {
+    display: block;
+    padding: 32px;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+```
+
+補充說明: `:host` 及 `:host-context` 虛擬類別選擇器
+- [[Angular] Angular Component Host Style](https://blog.kevinyang.net/2018/10/14/angular-host-style/)
+- [:host | Angular](https://angular.io/guide/component-styles#host)
+
+### 建立 `CardList` 元件顯示多張卡片
+
+```
+ng g component layout/card-list --module=app
+```
+
+專案中現在有 4 個元件: 
+
+![](img/u13-i14.png)
+
+設定元件的 routing path. 開啟 `src\app\app-routes.module.ts`, 增加 `flex` path 給 `CardList` 元件:
+
+```js
+const appRoutes: Routes = [
+  {path: 'grid', component: GridLayoutComponent},
+  // Added path
+  {path: 'flex', component: CardListComponent },
+  {path: '', redirectTo: 'grid', pathMatch: 'full'}
+];
+```
+
+設定 `CarList` 元件的樣板. 開啟`src\app\layout\card-list\card-list.component.html`, 增加一個 `div` 標籤作為 `flex` 容器:
+
+```html
+<div id="card-list" 
+    class="wrapper" 
+    fxLayout="row wrap" fxLayout.lt-sm="column"
+    fxLayoutGap="1rem"  fxLayoutAlign="flex-start">
+</div>
+```
+
+接著加入底下的 code 到上述的 `div` 中:
+
+```html
+<ng-container *ngFor="let _ of [1,2,3,4,5,6]">
+  <app-card fxFlex="0 1 calc(33.3% - 1rem)" 
+      fxFlex.lt-md="0 1 calc(50% - 1rem)" 
+      fxFlex.lt-sm="calc(100% - 1rem)"></app-card>
+</ng-container>
+```
+
+[`ng-container`](https://angular.io/guide/structural-directives#group-sibling-elements-with-ng-container) 可將兄弟元素(sibling element)集合在一起, 而不需使用包覆元素. 與直接使用 `div` 作為包覆元素最大的不同, `ng-container` 標記並不會加入到 DOM 之中. 進一步的說明參考 [Group sibling elements with `<ng-container>` | Angular](https://angular.io/guide/structural-directives#ng-container-to-the-rescue).
+
+使用 `fxFlex` 指令設定 `app-card` 在不同螢幕寬度下的元素寬度:
+- 超過(含) md ( W >= 960px): 每個元素佔 1/3 的螢幕寬度
+- 小於 md (  W < 959px ): 每個元素佔 1/2 的螢幕寬度
+- 小於 sm ( W < 600px): 每個元素佔全部的螢幕寬度
+
+完成的程式碼:
+
+```html
+<app-view-port>
+</app-view-port>
+
+<div id="card-list" class="wrapper" fxLayout="row wrap" fxLayout.lt-sm="column"
+                    fxLayoutGap="1rem"
+                    fxLayoutAlign="flex-start">
+
+    <ng-container *ngFor="let _ of [1,2,3,4,5,6]">
+        <app-card fxFlex="0 1 calc(33.3% - 1rem)" 
+        fxFlex.lt-md="0 1 calc(50% - 1rem)" 
+        fxFlex.lt-sm="calc(100% - 1rem)"></app-card>
+    </ng-container>
+</div>
+```
+
+
+## 補充: CSS tricks
+
+不選擇最後 n 個元素
+
+```css
+#card-list > *:not(:nth-last-child(-n+3)) {
+    margin-bottom: 0.5rem;
+}
+```
+Ref: 
+- [Useful :nth-child Recipes | CSS-Tricks](https://css-tricks.com/useful-nth-child-recipies/)
+
+- [Select the last 3 child elements](https://stackoverflow.com/questions/14268156/select-the-last-3-child-elements)
+
+
 
 
 ## 參考資料
