@@ -1,0 +1,17 @@
+h2 {
+    /* 必須在 parent node  reset counter 才行; 在 sibling node reset counter 無法正確重置 counter  */
+    /* 一個 parent node 只能有一個 reset counter, 否則, 會產生奇怪的現象. */
+    /* counter-reset: step_ctr 0; */
+}
+
+p .step::after{
+    counter-increment: step_ctr ;
+    content: "Step " counter(step_ctr) ": ";
+    font-weight: bold;
+} 
+
+/* .step {
+    counter-increment: step_ctr ;
+    font-weight: bold;
+} */
+

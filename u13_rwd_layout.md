@@ -3,6 +3,7 @@
 
 @import "css/images.css"
 @import "css/header_numbering.css"
+@import "css/step_numbering.css"
 
 ## 簡介
 
@@ -12,8 +13,7 @@
 [CSS Grid Layout 入門](https://ballaediworkshop.blogspot.com/2019/10/css-grid-introduction-and-tutorial.html)
 
 
-### CSS Grid Components
-
+CSS Grid Components:
 - Track
 - Line
 - Cell 
@@ -137,8 +137,9 @@ Source: [Angular Flex-Layout Demos](https://tburleson-layouts-demos.firebaseapp.
 
 </div>
 
-### 建立專案並使用 RouteModule
+<span class="reset-step step"></span> 建立專案並使用 RouteModule
 
+### 建立專案及 `GridLayout` 元件
 建立新專案
 
 ```
@@ -150,7 +151,7 @@ Generate the routing module
 ng generate module app-routing --flat --module=app
 ```
 
-### 安裝 Angular Flex-Layout library 
+<span class="step"></span> 安裝 Angular Flex-Layout library 
 
 Installing the Angular Flex-Layout library from npm
 ```
@@ -189,7 +190,7 @@ export class AppModule  {}
 
 ```
 
-### 建立 GridLayout 元件(第一個元件)
+<span class="step"></span> 建立 GridLayout 元件(第一個元件)
 
 Generate the GridLayout component 並將元件加入 `AppModule`:
 ```
@@ -234,7 +235,7 @@ const appRoutes: Routes = [
 export class AppRoutesModule { }
 ```
 
-### 設定 `GridLayout` 元件需要的 CSS 樣式
+<span class="step"></span> 設定 `GridLayout` 元件需要的 CSS 樣式
 
 ```css
 .blocks {
@@ -258,7 +259,9 @@ export class AppRoutesModule { }
 .footer {background-color: #5ca6b0;}
 ```
 
-### 加入 Non-RWD 的 Grid Layout
+### 設定 `GridLayout` 元件的 RWD 版面佈局
+
+<span class="step"></span> 加入 Non-RWD 的 Grid Layout
 
 編輯 `src\app\layout\grid-layout\grid-layout.component.html`,
 
@@ -286,7 +289,7 @@ export class AppRoutesModule { }
 </div>
 ```
 
-### 加入 螢幕寬度 md 以上時的版面佈局
+<span class="step"></span> 加入 螢幕寬度 md 以上時的版面佈局
 
 版面欄位切割成為 3 tracks, 第 1, 3 tracks 的寬度為螢幕寬度的 20%, 第 2 個 track 的寬度使用剩下未使用的寬度.
 
@@ -313,7 +316,7 @@ export class AppRoutesModule { }
 ![](img/u13-i05.png)
 
 
-###  加入 螢幕寬度為 sm 時的版面佈局
+<span class="step"></span>  加入 螢幕寬度為 sm 時的版面佈局
 
 版面欄位切割成為 2 tracks, 所有 tracks 的寬度為螢幕寬度的 20%.
 
@@ -328,7 +331,7 @@ gdColumn.sm="20%"
 
 
 
-###  加入 螢幕寬度為 xs 時的版面佈局
+<span class="step"></span>  加入 螢幕寬度為 xs 時的版面佈局
 
 各 area 佔 1 個 track.
 
@@ -364,7 +367,9 @@ gdAreas.xs="header  | sidebar | content | sidebar1 | footer"
 
 ## 實作 2: 取得目前的螢幕度
 
-### 在元件中使用 `MediaObserver` 
+### 建立 `ViewPort` 元件並注入 `MediaObserver` 元件
+
+<span class="step"></span> 在元件中使用 `MediaObserver` 
 
 建立新元件 `view-port`
 
@@ -397,7 +402,7 @@ export class ViewPortComponent implements OnInit {
 
 ```
 
-### 使用 `MediaObserver` 取得目前的螢幕寬度
+<span class="step"></span> 使用 `MediaObserver` 取得目前的螢幕寬度
 
 新增類別欄位 `mediaAlias$`
 
@@ -448,7 +453,7 @@ ngOnInit(): void {
   
 Source: [angular/flex-layout](https://github.com/angular/flex-layout/wiki/MediaObserver#mediachange-class)
 
-### 在樣版中顯示目前螢幕寛度
+<span class="step"></span> 設定 `ViewPort` 元件樣版, 在樣版中顯示目前螢幕寛度。
 
 開啟 `src\app\layout\view-port\view-port.component.html`, 輸入以下程式碼:
 
@@ -491,7 +496,9 @@ Source: [angular/flex-layout](https://github.com/angular/flex-layout/wiki/MediaO
 
 </div>
 
-### 建立 `Card` 元件以卡片的方式顯示資訊
+### 建立卡片顯示所需的 `Card` 及 `CardList` 元件
+
+<span class="step"></span> 建立 `Card` 元件以卡片的方式顯示資訊
 
 ```
 ng g component layout/card --module=app
@@ -512,7 +519,7 @@ ng g component layout/card --module=app
 - [[Angular] Angular Component Host Style](https://blog.kevinyang.net/2018/10/14/angular-host-style/)
 - [:host | Angular](https://angular.io/guide/component-styles#host)
 
-### 建立 `CardList` 元件顯示多張卡片
+<span class="step"></span> 建立 `CardList` 元件顯示多張卡片
 
 ```
 ng g component layout/card-list --module=app
