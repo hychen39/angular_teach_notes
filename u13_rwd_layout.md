@@ -137,9 +137,10 @@ Source: [Angular Flex-Layout Demos](https://tburleson-layouts-demos.firebaseapp.
 
 </div>
 
+### 建立專案及 `GridLayout` 元件
+
 <span class="reset-step step"></span> 建立專案並使用 RouteModule
 
-### 建立專案及 `GridLayout` 元件
 建立新專案
 
 ```

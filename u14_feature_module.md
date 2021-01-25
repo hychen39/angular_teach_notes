@@ -74,21 +74,45 @@ Ref: [NgModule Metadata @ Angular](https://angular.io/guide/architecture-modules
 - [特性模組 @ Angular](https://angular.tw/guide/feature-modules)
 - [Summary of NgModule categories @ Angular](https://angular.io/guide/module-types)
 
+### 建立特性模組的程序
 
-建立特性模組
+使用以下 CLI 指令建立特性模組:
 
 ```
 $ ng g module StockNews
 CREATE src/app/stock-news/stock-news.module.ts (195 bytes)
 ```
 
+Angular CLI 會為模組產生一個目錄。
 
-匯入特性模組到主模組(root module)中
+如果要一併產生 routing module:
+```
+ng g module StockNews --routing 
+```
 
-建立 `StockNewsTicker`
+
+特性模組建立後, 將其匯入到主模組(root module)中。在 `AppModule` 的 `import` meta-data property 中加入特性模組:
+
+```js
+@NgModule({
+  declarations: [...],
+  imports: [
+    ...,
+    // Add the feature module
+    StockNewsModule
+  ],
+  providers: [...],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+接續可以產生新元件到特性模組中。
+
+在 `StockNews` 特性模組中建立 `StockNewsTicker` 元件, 使用以下的 CLI 指令:
 
 ```
-$ ng g component stock-news/StockNewsTicker
+$ ng g component stock-news/StockNewsTicker 
 CREATE src/app/stock-news/stock-news-ticker/stock-news-ticker.component.html (32 bytes)
 CREATE src/app/stock-news/stock-news-ticker/stock-news-ticker.component.spec.ts (693 bytes)
 CREATE src/app/stock-news/stock-news-ticker/stock-news-ticker.component.ts (317 bytes)
@@ -96,10 +120,14 @@ CREATE src/app/stock-news/stock-news-ticker/stock-news-ticker.component.css (0 b
 UPDATE src/app/stock-news/stock-news.module.ts (311 bytes)
 ```
 
-匯出 `StockNewsTicker`
+上述指令在特性模組所在的目錄建立元件, Angular CLI 會自動將元件加入到該特性模組中。
 
 
-產生 component 指定宣告的 module 要使用 `--module` 或者 `-m` 參數, 如果 component 目錄所在的父目錄中有多個 `module` file 時。如果沒有使用, 會產生錯誤:
+完成後, 我們在特性模組中匯出 `StockNewsTicker` 元件, 如此其它的模組便可使用`StockNewsTicker` 元件樣版。
+
+
+
+<!-- 產生 component 指定宣告的 module 要使用 `--module` 或者 `-m` 參數, 如果 component 目錄所在的父目錄中有多個 `module` file 時。如果沒有使用, 會產生錯誤:
 
 ```
 More than one module matches. Use skip-import option to skip importing the component into the closest module.
@@ -109,9 +137,111 @@ More than one module matches. Use skip-import option to skip importing the compo
 
 Example: 
 
-![](img/u14-i01.png)
+![](img/u14-i01.png) -->
 
-在 `stock-news` 模組中產生元件 `StockNewsDetail`:
+## 特性模組的路徑導向器
+
+特性模組允許有自己的路徑導向器(router), 用以設定模組內各元件的導向路徑。藉由此特性, 特定模組就可獨立於其它模組。
+
+在特性模組中, 我們在 import `RouterModule` 時使用 `.forChild()` 初始化匯入的 `RouterModule`. 匯入的 `RouterModule` 會包含所有的導向指令及路徑, 但不包含 `Router` Service. 
+
+一個 Angular App 只能啟用一個 `Router` service, 當我們使用 `RouterModule.forRoot()` 時才會注入 `Router` service 到應用程式中。
+
+匯入 `RouterModule` 後, 我們也必須將特性模組中的 `RouterModule`  匯出, 讓 `Router` Service 知道特性模組中定義的元件導向路徑。
+
+```typescript
+import ...
+import ...
+
+const routes: Routes = [
+    {path: 'news/detail', component: ...},
+    {path: 'news/list', component: ...}
+];
+
+@NgModule({
+  //匯入並初始化
+  imports: [RouterModule.forChild(routes)],
+  // 匯出路徑
+  exports: [RouterModule]
+})
+export class StockNewsRoutingModule { }
+```
+
+### 在特性模組內使用路徑
+
+當匯出特性模組中使用的 `RouterModule` 之後, 就可以在特性模組內或其它模組使用這些定義於 `RouterModule` 內路徑。
+
+在特性模組內的元件樣版使用路徑的例子。
+
+假設我們想要能夠點選「股市快訊」中的訊息標題, 之後將訊息的內容顯示在選單下方的主要區域的 router outlet 中。我們可以為訊息標題加入 `routerLink` 指示:
+
+```html
+<div class="ticker-wrap">
+    <div class="ticker">
+        <div class="ticker__item">
+            <a [routerLink]="['news/detail']">stock-news-ticker1 works! </a>
+
+            <!-- stock-news-ticker1 works!  -->
+        </div>
+        <div class="ticker__item">
+            <a [routerLink]="['news/detail']">stock-news-ticker2 works! </a>
+            <!-- stock-news-ticker2 works! -->
+        </div>
+    </div>
+</div>
+```
+
+如此, 在點擊訊息標題後, 在 router outlet 的區域就會顯示訊息詳細內容, 該內容由其它元件樣版負責顯示。
+
+![](img/u14-i03.png)
+
+### 在其它模組使用特性模組內定義的路徑
+
+在其它模組也可以直接使用特性模組中匯出的 `RouterModule` 內路徑。
+
+例如, 在 `App` 元件中的 Menu bar 上提供 News List 的選單項目, 點擊後顯示所有的新聞快訊的標題, 此顯示的區域的內容由特性模組內的元件負責。`App` 元件不屬於 `StockNewModule` 中。
+
+
+```html
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+<app-stock-news-ticker></app-stock-news-ticker>
+<!-- Navigation Bar -->
+<nav>
+  ...
+  <!-- 路徑 news/list 定義於 StockNews 特性模組中 -->
+  <a routerLink="/news/list" routerLinkActive="active-link">News List |</a>
+</nav>
+<!-- 路由出口 -->
+<router-outlet></router-outlet>
+</div>
+```
+
+在下圖中, News List 的選單項目的顯示區域是由 `StockNew` 特性模組中的 `StockNewsList` 元件負責顯示:
+![](img/u14-i04.png)
+
+
+## 實作 1: 建立特性模組及其元件
+
+### 實作目標
+
+要在 Menu bar 的上方加入一個股市新聞快訊(News Ticker)區域:
+
+![](img/u14-i02.png)
+
+我們將建立 `StockNewsTicker` 元件來顯示新聞快訊區域, 此元件將被放到一個特性模組 `StockNews` 中。
+
+### 建立特性模組 `StockNews` 及 `StockNewsTicker` 元件
+
+<span class="step"></span> 建立特性模組及其路徑導向器
+
+```
+ng g module StockNews --routing 
+```
+
+<span class="step"></span> 在 `stock-news` 模組中產生元件 `StockNewsTicker`:
 
 ```
 $ ng g component stock-news/StockNewsDetail
@@ -122,9 +252,112 @@ CREATE src/app/stock-news/stock-news-detail/stock-news-detail.component.css (0 b
 UPDATE src/app/stock-news/stock-news.module.ts (529 bytes)
 ```
 
+此元件會自動被註冊到 `StockNews` 模組中。
 
-為 `stock-news` module 產生一個 routing module
+接著, 把此件設為公開元件, 以便在其它模組中使用。完成後的 `StockNews` 模組:
 
+```js
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { StockNewsTickerComponent } from './stock-news-ticker/stock-news-ticker.component';
+import {StockNewsRoutingModule} from  './stock-news-routing.module';
+
+@NgModule({
+  declarations: [StockNewsTickerComponent],
+  imports: [
+    CommonModule,
+    StockNewsRoutingModule
+  ],
+  // Export the components for other modules to use.
+  exports: [
+    StockNewsTickerComponent
+  ]
+})
+export class StockNewsModule { }
 ```
-ng g module 
+
+
+### 設定元件 `StockNewsTicker` 的 樣版及 CSS 
+
+<span class="step"></span> 開啟 `src\app\stock-news\stock-news-ticker\stock-news-ticker.component.html`, 加入以下的 HTML codes:
+
+```html
+<div class="ticker-wrap">
+    <div class="ticker">
+        <div class="ticker__item">
+            stock-news-ticker1 works! 
+        </div>
+        <div class="ticker__item">
+            stock-news-ticker2 works!
+        </div>
+    </div>
+</div>
 ```
+
+<span class="step"></span> 開啟 `src\app\stock-news\stock-news-ticker\stock-news-ticker.component.css`, 加入以下的 CSS codes:
+
+```css
+/* Part of the original codes are from https://codepen.io/lewismcarey/pen/GJZVoG */
+/* Convert the SCSS to CSS by using the converter https://www.cssportal.com/scss-to-css/ */
+  
+  @keyframes ticker {
+    0% {
+      transform: translate3d(0, 0, 0);
+      visibility: visible;
+    }
+    100% {
+      transform: translate3d(-100%, 0, 0);
+    }
+  }
+  .ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    height: 4rem;
+    /* background-color: rgba(0, 0, 0, 0.9); */
+    padding-left: 100%;
+    box-sizing: content-box;
+  }
+  .ticker-wrap .ticker {
+    display: inline-block;
+    height: 4rem;
+    line-height: 4rem;
+    white-space: nowrap;
+    padding-right: 100%;
+    box-sizing: content-box;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-name: ticker;
+    animation-duration: 30s;
+  }
+  .ticker-wrap .ticker__item {
+    display: inline-block;
+    padding: 0 2rem;
+    font-size: 2rem;
+    /* color: white; */
+  }
+```
+
+### 在 `App` 元件的樣版中使用 `StockNewsTicker` 元件樣版
+
+```html
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+
+<!-- StockNewsTicker 元件樣版 -->
+<app-stock-news-ticker></app-stock-news-ticker>
+
+<!-- Navigation Bar -->
+<nav>
+  <a routerLink="/" routerLinkActive="active">Home | </a>
+  ...
+</nav>
+<!-- 路由出口 -->
+<router-outlet></router-outlet>
+</div>
+```
+
+
+## 實作 2: 使用特性模組內的路徑以使用該模組內的元件
