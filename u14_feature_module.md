@@ -1,4 +1,4 @@
-# Unit 14 Feature Module (Working Article)
+# Unit 14 特性模組 (Feature Modules)
 
 
 @import "css/images.css"
@@ -6,19 +6,19 @@
 @import "css/step_numbering.css"
 
 
-## Review NgModule Metadata
+## 和 特性模組相關的 NgModule Metadata 的特性
 
-An NgModule is defined by a class decorated with @NgModule(). The @NgModule() decorator is a function that takes a single metadata object, whose properties describe the module. The most important properties are as follows.
+`NgModule` 是一個使用 `@NgModule()` 裝飾的類別. `@NgModule()` 修飾子是一個能夠接受一個 metadata 物件的函數, 用以描述此模組。
 
-`NgModule` 的 Metadata 用來描述模組的特性. 與 Feature Module 特別相關的特性包括:
+與 Feature Module 特別相關的特性包括:
 
-`declarations` (宣告類別清單) : 宣告屬於此模組的 components, directives, and pipes 等類別(class).
+- `declarations` (宣告類別清單) : 宣告屬於此模組的 components, directives, and pipes 等類別(class).
 
-`exports` (匯出類別清單): 是 `declarations` 的子集合, 指定宣告清單中的那些元件是公開的, 可在其他模組的元件樣板(component template)中使用.
+- `exports` (匯出類別清單): 是 `declarations` 的子集合, 指定宣告清單中的那些元件是公開的, 可在其他模組的元件樣板(component template)中使用.
 
-`imports` (匯入模組清單) : 要匯入的其他多個模組, 其模組中的類別會在此模組中的元件樣板中使用. 換句話說, `imports` 列出的是此模組的相依模組清單(list of dependent modules). 匯入模組後, 在模組中就可以看到其他模組的公開類別(exported class). 
+- `imports` (匯入模組清單) : 要匯入的其他多個模組, 其模組中的類別會在此模組中的元件樣板中使用. 換句話說, `imports` 列出的是此模組的相依模組清單(list of dependent modules). 匯入模組後, 在模組中就可以看到其他模組的公開類別(exported class). 
 
-`providers` (服務器清單): 列出在此模組中要建立的服務器實體(Service instance), 當在此某組的元件中要注入服務器時, Angular 會使用此服務器清單中的服務器實體。
+- `providers` (服務器清單): 列出在此模組中要建立的服務器實體(Service instance), 當在此某組的元件中要注入服務器時, Angular 會使用此服務器清單中的服務器實體。
 
 ```typescript
 import { NgModule } from '@angular/core';
@@ -35,7 +35,7 @@ export class YourFeatureModule { }
 
 Ref: [NgModule Metadata @ Angular](https://angular.io/guide/architecture-modules#ngmodule-metadata)
 
-## Review: 模組(NgModule)與元件(Component)的關係
+## 模組與元件(Component)的關係
 
 在 App 架構中, 模組作為元件的其元件提供了編譯環境(compilation context)。TypeScript 在編譯模組內的元件樣版時, 會在模組內尋找元件樣版使用的 directives。若在模組內沒有提供, 則產生編譯錯誤。Ref: [What is a Compilation Context in Angular?  @ Getting Title at 41:27](https://stackoverflow.com/a/50940824/7820390)
 
@@ -55,7 +55,7 @@ Ref: [NgModule Metadata @ Angular](https://angular.io/guide/architecture-modules
 ![](https://angular.io/generated/images/guide/architecture/view-hierarchy.png)
 
 
-## 特性模組(Feature Module)的用途與分類
+## 特性模組的用途與分類
 
 特性模組可用來組織 Angular 專案中的程式碼.
 
@@ -125,19 +125,23 @@ UPDATE src/app/stock-news/stock-news.module.ts (311 bytes)
 
 完成後, 我們在特性模組中匯出 `StockNewsTicker` 元件, 如此其它的模組便可使用`StockNewsTicker` 元件樣版。
 
+```js
+...
+import { StockNewsTickerComponent } from './stock-news-ticker/stock-news-ticker.component';
 
-
-<!-- 產生 component 指定宣告的 module 要使用 `--module` 或者 `-m` 參數, 如果 component 目錄所在的父目錄中有多個 `module` file 時。如果沒有使用, 會產生錯誤:
+@NgModule({
+  declarations: [StockNewsTickerComponent, ...],
+  imports: [   ...  ],
+  // Export the components for other modules to use.
+  exports: [
+    // 匯出元件成為公開元件, 供其它模組使用
+    StockNewsTickerComponent,
+    ...
+  ]
+})
+export class StockNewsModule { }
 
 ```
-More than one module matches. Use skip-import option to skip importing the component into the closest module.
-```
-
-如果 component 目錄所在的父目錄中有多個 `module` file 時, Angular CLI 會將該模組自動指定成元件的宣告模組。
-
-Example: 
-
-![](img/u14-i01.png) -->
 
 ## 特性模組的路徑導向器
 
@@ -361,3 +365,90 @@ export class StockNewsModule { }
 
 
 ## 實作 2: 使用特性模組內的路徑以使用該模組內的元件
+
+### 實作目標
+
+操作案例 1: 點選「股市快訊」中的標訊息, 會在主要顯示區域顯示訊息內容.
+
+操作案例 2: Menu Bar 提供 News List 項目, 點選後會顯示所有股市快訊標題.
+
+### 新增元件到 `StockNews` 模組中
+
+<span class="step"></span> 執行以下 Angular CLI 指令, 新增 `StockNewsDetail` 元件到 `StockNews` 模組中:
+
+```
+ng g c stock-news/StockNewsDetail
+```
+
+<span class="step"></span> 執行以下 Angular CLI 指令, 新增 `StockNewsList` 元件到 `StockNews` 模組中:
+
+```
+ng g c stock-news/StockNewsList
+```
+
+
+<span class="step"></span> 設定元件的導向路徑。
+
+開啟 `src\app\stock-news\stock-news-routing.module.ts`, 設定在 `StockNews` 特性模組中的導向路徑:
+
+```js
+import { StockNewsDetailComponent } from './stock-news-detail/stock-news-detail.component';
+import { StockNewsListComponent } from './stock-news-list/stock-news-list.component';
+
+const routes: Routes = [
+    {path: 'news/detail', component: StockNewsDetailComponent},
+    {path: 'news/list', component: StockNewsListComponent}
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class StockNewsRoutingModule { }
+```
+
+### 設定快訊標題連結的導向路徑
+
+<span class="step"></span> 開啟 `StockNewTicker` 元件的樣版, 為快訊標題加上 `<a>` 標籤, 並設定點擊後的導向路徑:
+
+```html
+<div class="ticker-wrap">
+    <div class="ticker">
+        <div class="ticker__item">
+            <a [routerLink]="['news/detail']">stock-news-ticker1 works! </a>
+        </div>
+        <div class="ticker__item">
+            <a [routerLink]="['news/detail']">stock-news-ticker2 works! </a>
+        </div>
+    </div>
+</div>
+```
+
+### 加入 `News List` 項目到 Menu Bar
+
+<span class="step"></span> 開啟 `App` 元件的樣版, 加入新的 Menu item:
+
+```html
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+
+<!-- 股市快訊視域 -->
+<app-stock-news-ticker></app-stock-news-ticker>
+
+<!-- Navigation Bar -->
+<nav>
+  ...
+  <!-- 新增的項目 -->
+  <a routerLink="/news/list" routerLinkActive="active-link">News List |</a>
+</nav>
+<!-- 路由出口 -->
+<router-outlet></router-outlet>
+</div>
+```
+
+完成後的執行畫面:
+
+![](img/u14-i05.png)
+
