@@ -60,6 +60,9 @@
 - Can also read in [https://hychen39.github.io/](https://hychen39.github.io/angular/2021/01/13/u13_rwd_layout.html#%E5%AF%A6%E4%BD%9C-1-%E4%BD%BF%E7%94%A8-grid-directive-%E8%A3%BD%E4%BD%9C-rwd-%E7%89%88%E9%9D%A2)
 
 [Unit 14 Feature Module 及其導向](./u14_feature_module.md)
+- Also published in [https://hychen39.github.io/](https://hychen39.github.io/angular/2021/01/26/u14_feature_module.html)
+
+Memos for U14:
 - Section 2.5 Feature Module. [Feature Module | Angular](https://angular.tw/guide/feature-modules)
 - Section 4.2 Lazy-Loading modules. [Lazy-loading module | Angular](https://angular.tw/guide/lazy-loading-ngmodules)
 
