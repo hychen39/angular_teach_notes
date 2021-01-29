@@ -6,7 +6,7 @@
 @import "css/step_numbering.css"
 
 
-## 和 特性模組相關的 NgModule Metadata 的特性
+## 和特性模組相關的 NgModule Metadata 的特性
 
 `NgModule` 是一個使用 `@NgModule()` 裝飾的類別. `@NgModule()` 修飾子是一個能夠接受一個 metadata 物件的函數, 用以描述此模組。
 

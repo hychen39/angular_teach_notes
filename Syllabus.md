@@ -66,6 +66,11 @@ Memos for U14:
 - Section 2.5 Feature Module. [Feature Module | Angular](https://angular.tw/guide/feature-modules)
 - Section 4.2 Lazy-Loading modules. [Lazy-loading module | Angular](https://angular.tw/guide/lazy-loading-ngmodules)
 
+[Unit 15 子路徑 (Child Routes)](./u15_child_route.md)
+- Section 3.6
+
+
+
 [Unit XX 在導向中使用 Observables 及導向到子元件的 `<router-outlet>` (TBD)]
 - Observables and the router (Section 6.6)
 - Child route (Section 3.6)
