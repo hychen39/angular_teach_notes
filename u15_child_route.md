@@ -138,19 +138,111 @@ export class NewsSourceService {
 
 ### 顯示新聞快訊標題清單
 
+<span class="step"></span> 注入NewsSourceService` 服務器到 `StockNewsList` 元件。
+
+我們要使用 `StockNewsList` 元件顯示 `NewsSourceService` 服務器所提供的新聞快訊。所以, 要注入 `NewsSourceService` 服務器到 `StockNewsList`元件, 注入點為該元件的建構子參數:
+
+
+```js
+import { NewsSourceService } from './../news-source.service';
+import { Component, OnInit } from '@angular/core';
+
+
+@Component({
+  selector: 'app-stock-news-list',
+  templateUrl: './stock-news-list.component.html',
+  styleUrls: ['./stock-news-list.component.css']
+})
+export class StockNewsListComponent implements OnInit {
+
+  // 注入 `NewsSourceService` 服務器 
+  constructor(public newSource: NewsSourceService) {
+   }
+
+  ngOnInit(): void {
+  }
+
+}
+```
+
+<span class="step"></span> 使用 Flex-Layout 模組切割版面
+
+`StockNewList` 的樣版分成兩個顯示區域, 左邊顯示快訊標題, 右邊顯示快訊內容, 使用 Flex-Box 分割版面, 左邊和右邊縮放比例相同。
+
+我們使用 Flex-Layout 模組提供的 flex-box directive 切割版面。 
+
+使用底下的指令在專案中安裝 Flex-Layout 模組:
+
+```
+npm i -s @angular/flex-layout @angular/cdk
+```
+
+安裝完成後, 匯入該模組到 `StockNewsModule` 特性模組中:
+
+![](img/u15-i05.png)
+
+
+<span class="step"></span> 元件樣版設定
+
+完成 Flex-Layout 模組的匯入後, 可設`StockNewList` 的樣版版面:
+- 在一般的情況下, 以 row 的方式顯示 flex-box 內的 flex-item, 每個 flex-item 佔螢幕寬度的 50%。
+- 當螢幕寬度小於 `sm` 時, 改用 column 的方式顯示, 每個 flex-item 的寬度為 100%.
+
+
+在左邊顯示的 `div` 區塊, 我們還使用 `*ngFor` directive 動態的產生新聞快訊的標題。每個標題要加上導向路徑 `detail/:id`, 其中 `:id` 為快訊標題的索引值。
+
+在右邊顯示的 `div` 區塊, 加入 `<router-outlet>`, 做為該元件的子路徑導向的出口。
+
+`StockNewList`元件的樣版如下:
+```html
+<div fxLayout="row"
+     fxLayout.lt-sm="column">
+     <!-- 左邊顯示的 `div` 區塊  -->
+    <div fxFlex="1 1 50%"
+         fxFlex.fxLayout.lt-sm="100%"
+         class="newsList">
+        <ul>
+            <li *ngFor="let news of newSource.newsList; index as idx">
+                <a [routerLink]="['detail', idx ]">{{news.title}} </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 在右邊顯示的 `div` 區塊  -->
+    <div fxFlex="1 1 50%" 
+         fxFlex.fxLayout.lt-sm="100%"
+         class="newsDetails">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+```
+
+有關 Flex-Layout API 進一步參考:
+- [fxLayout API @ angular/flex-layout](https://github.com/angular/flex-layout/wiki/fxLayout-API)
+- [fxFlex API @ angular/flex-layout](https://github.com/angular/flex-layout/wiki/fxFlex-API)
+
 ### 設定快訊標題內容的顯示子路徑
 
-設定 點選新聞快訊標題後顯示快訊內容的 子路徑
+完成前述的設定後, 接著設定 `StockNewsModule` 特性模組內的導向路徑。
+
+<span class="step"></span> 設定點選新聞快訊標題後顯示快訊內容的子路徑。
+
+路徑 `news/list` 會在最上層的 `<router-outlet>` 顯示 `StockNewsListComponent` 元件的樣板. 快訊內容是在 `StockNewsListComponent` 內的 `<router-outlet>` 顯示。所以, 在路徑 `news/list` 下使用 `children` 指定該路徑下的子路徑要顯示的元件:
+
+```js
+const routes: Routes = [
+    {path: 'news/detail/:id', component: StockNewsDetailComponent},
+    {path: 'news/list', 
+     component: StockNewsListComponent,
+     // 子路徑
+     children: [{path: "detail/:id", component: StockNewsDetailComponent}]
+    }
+];
+```
+
+因此, `StockNewsDetailComponent` 的完整路徑為 `news/list/detail/:id`, 其中 `:id` 為路徑參數, 以區辨要顯示的是那個快訊標題的內容。
 
 ### 顯示快訊的內容
 
 
 
-Install the Angular Flex-Layout library by using the npm
-```
-npm i -s @angular/flex-layout @angular/cdk
-```
-
-Import top-level FlexLayoutModule to `StockNews` module:
-
-Flex-Layout API: [angular/flex-layout](https://github.com/angular/flex-layout/wiki/fxFlex-API)
