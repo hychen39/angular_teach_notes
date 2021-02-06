@@ -13,6 +13,7 @@ Angular 教學講義
 - [Angular 目錄 | Jonny Huang 的學習筆記](https://jonny-huang.github.io/angular/)
 - [風格指南 | Angular](https://angular.tw/guide/styleguide)
 - [Angular Ivy](https://indepth.dev/a-gentle-introduction-into-tree-shaking-in-angular-ivy/): 解釋 Ivy 的 Tree-Shacking 功能。
+- [快快樂樂學會 Angular 2 網站開發框架 by wii 保哥 ](https://s.itho.me/modernweb/2016/trackb/%E5%BF%AB%E5%BF%AB%E6%A8%82%E6%A8%82%E5%AD%B8%E6%9C%83%20Angular%202%20%E7%B6%B2%E7%AB%99%E9%96%8B%E7%99%BC%E6%A1%86%E6%9E%B6.pdf)
 
 ### RxJS
 
