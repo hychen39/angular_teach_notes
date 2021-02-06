@@ -67,9 +67,11 @@ Memos for U14:
 - Section 4.2 Lazy-Loading modules. [Lazy-loading module | Angular](https://angular.tw/guide/lazy-loading-ngmodules)
 
 [Unit 15 子路徑 (Child Routes)](./u15_child_route.md)
-- Section 3.6
+- Also published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/02/06/u15_child_route.html)
 
 
+[Unit 16 在一個元件樣版中使用多個具有名稱的 router outlets](./u16_multiple_router_outlet.md)
+- Ref: https://angular.io/guide/router-tutorial-toh#displaying-multiple-routes-in-named-outlets
 
 [Unit XX 在導向中使用 Observables 及導向到子元件的 `<router-outlet>` (TBD)]
 - Observables and the router (Section 6.6)
