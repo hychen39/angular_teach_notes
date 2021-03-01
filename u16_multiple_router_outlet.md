@@ -126,3 +126,102 @@ Ref: https://angular.io/guide/router-tutorial-toh#displaying-multiple-routes-in-
 
 ## 實作練習
 
+### Use Case 説明
+
+以 u15 的練習成果為基礎加以修改。
+
+![](img/u16-i04.png)
+
+### 步驟
+
+<span class="step"></span> 設定 Feature Module 中的路徑顯示於特定名稱的 router outlet。
+
+開啓 `src\app\stock-news\stock-news-routing.module.ts`。
+
+增加 `outlet` 屬性到 `news/list` 的 route 物件：
+```js
+const routes: Routes = [
+    {path: 'news/detail/:id', component: StockNewsDetailComponent},
+    {path: 'news/list', 
+     component: StockNewsListComponent,
+     // 新增的 outlet 屬性
+     outlet: 'aux',
+     children: [{path: "detail/:id", component: StockNewsDetailComponent}]
+    }
+];
+```
+如此，`news/list` 路徑下的元件將顯示於名稱為 `aux` 的 router outlet。
+
+<span class="step"></span> 在 `app` 元件的頁面中加入第二個 router outlet，並爲其命名。
+
+開啓 `src\app\app.component.html`。
+
+加入第二個 router outlet 並命名爲 `aux`:
+
+```html
+<router-outlet name="aux"></router-outlet>
+```
+
+新增加 `Open News List` 及 `Close News List` 兩個超鏈接：
+
+```html
+<!-- 注意: outlets 的路徑要使用相對路徑, 相對在目前的路徑 -->
+  <!-- 此 outlet 的路徑為 current_path(aux:news/list) -->
+  <a [routerLink]="[{outlets: {aux: 'news/list' }}]"
+    routerLinkActive="active-link">Open News List / </a>
+  <!-- Close the new list -->
+  <a [routerLink]="[{outlets: {aux: null }}]" 
+    routerLinkActive="active-link">Close News List |</a>
+```
+
+當點選 `Open News List` 會在目前主要路徑下，附加 `{aux:news/list}`。第二個 router outlet 會顯示該路徑對應的元件的 HTML 内容。
+
+當點選 `Close News List`, 附加的路徑為 `{aux:null}`，第二個 router outlet 不會顯示任何元件的 HTML 内容。
+
+注意，要使用相對路徑。
+
+<span class="step"></span> Router outlet 的 RWD 排版。
+
+匯入 `FlexLayoutModule` 到專案中，以利進行 RWD 排版。
+
+開啓 `src\app\app.module.ts`
+
+```js
+import {FlexLayoutModule} from '@angular/flex-layout'
+
+@NgModule({
+  declarations: [
+    ...
+  ],
+  imports: [
+    ...
+    
+    StockNewsModule,
+    // Added module
+    FlexLayoutModule
+  ],
+  providers: [
+    ...
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+使用 `fxFlex` directive 為第一及第二個 router outlets 的版面進行 RWD 排版：
+
+```html
+<div fxLayout="row" fxLayout.lt-sm="column">
+  <div fxFlex="1 1 50%" fxFlex.lt-sm="100%">
+    <!-- First Router outlet -->
+    <router-outlet></router-outlet>
+  </div>
+  <div fxFlex="1 1 50%" fxFlex.lt-sm="100%">
+    <!-- Second router outlet -->
+    <router-outlet name="aux"></router-outlet>
+  </div>
+</div>
+```
+
+<span class="step"></span>  完成。
+
