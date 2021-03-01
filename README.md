@@ -25,3 +25,9 @@ Angular 教學講義
 - [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)
 
 [Learn RxJS](https://www.learnrxjs.io/)
+
+### Angular Materials
+
+- 介紹每個元件的設計準則及實作的原件。[Material Design](https://material.io/components?platform=web) 
+    - 例如 [應用程式上方的 bars (列)](https://material.io/components/app-bars-top)
+- [Angular University: High Quality Angular Courses](https://angular-university.io/home)

@@ -60,20 +60,28 @@
 - Can also read in [https://hychen39.github.io/](https://hychen39.github.io/angular/2021/01/13/u13_rwd_layout.html#%E5%AF%A6%E4%BD%9C-1-%E4%BD%BF%E7%94%A8-grid-directive-%E8%A3%BD%E4%BD%9C-rwd-%E7%89%88%E9%9D%A2)
 
 [Unit 14 Feature Module 及其導向](./u14_feature_module.md)
-- Also published in [https://hychen39.github.io/](https://hychen39.github.io/angular/2021/01/26/u14_feature_module.html)
+- Published in [https://hychen39.github.io/](https://hychen39.github.io/angular/2021/01/26/u14_feature_module.html)
 
 Memos for U14:
 - Section 2.5 Feature Module. [Feature Module | Angular](https://angular.tw/guide/feature-modules)
 - Section 4.2 Lazy-Loading modules. [Lazy-loading module | Angular](https://angular.tw/guide/lazy-loading-ngmodules)
 
 [Unit 15 子路徑 (Child Routes)](./u15_child_route.md)
-- Also published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/02/06/u15_child_route.html)
+- Published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/02/06/u15_child_route.html)
 
 
-[Unit 16 在一個元件樣版中使用多個具有名稱的 router outlets](./u16_multiple_router_outlet.md) (Workig article)
+[Unit 16 在一個元件樣版中使用多個具有名稱的 router outlets](./u16_multiple_router_outlet.md)
+- Published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/03/01/u16_multiple_router_outlet.html)
 - Ref: https://angular.io/guide/router-tutorial-toh#displaying-multiple-routes-in-named-outlets
 
-[Unit XX 在導向中使用 Observables 及導向到子元件的 `<router-outlet>` (TBD)]
-- Observables and the router (Section 6.6)
-- Child route (Section 3.6)
 
+開始介紹 Angular Material Components
+
+[Uint 17 安裝 Angular Materials 及 Theme 到專案中]
+Ref: 
+- [Angular Material Course @ Angular University: High Quality Angular Courses](https://angular-university.io/lesson/angular-material-hello-world)
+- [Angular Material](https://material.angular.io/guide/getting-started)
+- [Angular Material](https://material.angular.io/guide/theming)
+
+
+[Unit 18 工具列]
