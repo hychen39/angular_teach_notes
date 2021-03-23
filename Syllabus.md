@@ -74,14 +74,28 @@ Memos for U14:
 - Published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/03/01/u16_multiple_router_outlet.html)
 - Ref: https://angular.io/guide/router-tutorial-toh#displaying-multiple-routes-in-named-outlets
 
+[Unit 17 Bootstrap 的 Gird System 介紹 @ hackmd.io](https://hackmd.io/@hychen39/B1D0dJrU8)
+
+
+[Unit 18 在 Angular 中使用 Bootstrap CSS framework]
+    - Angular CLI 的設定
+    - 彈跳視窗
 
 開始介紹 Angular Material Components
 
-[Uint 17 安裝 Angular Materials 及 Theme 到專案中]
+[Uint 1X 安裝 Angular Materials 及 Theme 到專案中]
 Ref: 
 - [Angular Material Course @ Angular University: High Quality Angular Courses](https://angular-university.io/lesson/angular-material-hello-world)
 - [Angular Material](https://material.angular.io/guide/getting-started)
 - [Angular Material](https://material.angular.io/guide/theming)
 
 
-[Unit 18 工具列]
+[Unit 1X 工具列]
+
+Unit XX Upload File 上傳圖片
+- Ref: https://stackoverflow.com/a/47938117/7820390
+
+
+
+
+Unit XX 使用 npm 製作模組
