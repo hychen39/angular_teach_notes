@@ -77,9 +77,14 @@ Memos for U14:
 [Unit 17 Bootstrap 的 Gird System 介紹 @ hackmd.io](https://hackmd.io/@hychen39/B1D0dJrU8)
 
 
-[Unit 18 在 Angular 中使用 Bootstrap CSS framework]
+[Unit 18 在 Angular 中使用 Bootstrap CSS framework](./u18_bootstrap_modal_dialog.md)
     - Angular CLI 的設定
     - 彈跳視窗
+
+[Unit 19 Grid Layout in CSS](./u19_css_grid_layout.md)
+- Grid layout
+
+[Unit 20 Flex Layout in CSS](./u20_css_flex_layout.md)
 
 開始介紹 Angular Material Components
 
