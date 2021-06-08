@@ -1,0 +1,331 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "ORDS generated API for demo module. ",
+        "version": "1.0.0",
+        "description": "文字及圖片的 CRUD 教學示範"
+    },
+
+    "host": "imsys",
+    "basePath": "/ords/cyutim/demo",
+    "schemes": [
+        "http"
+    ],
+
+    "paths": {
+        "/cust": {
+            "delete": {
+                "description": "Delete a customer from the demo_cust table",
+                
+                "consumes":[
+                    "application/json"],
+
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DeletePayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Number of deleted rows",
+                        "schema": {
+                            "$ref": "#/definitions/RowCount"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Add a new customer to demo_cust table.",
+                "responses": {
+                    "200": {
+                        "description": "Return the ID for the record",
+                        "schema": {
+                            "type":"object",
+                            "properties": {
+                                "id":{
+                                    "type":"integer",
+                                    "example": "10"
+                                }
+                            }
+                        }
+                    }
+                },
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DemoCustomerRecord"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PAYLOAD2"
+                        }
+                    }
+                ]
+            }
+        },
+        "/customer/{id}": {
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "implicit",
+                        "pattern": "^[^/]+$"
+                    },
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PAYLOAD3"
+                        }
+                    }
+                ]
+            },
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "implicit",
+                        "pattern": "^[^/]+$"
+                    }
+                ]
+            }
+        },
+        "/customers": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/media": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                }
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "file_name",
+                        "in": "header",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "file_type",
+                        "in": "header",
+                        "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PAYLOAD4"
+                        }
+                    }
+                ]
+            }
+        },
+        "/media/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "implicit",
+                        "pattern": "^[^/]+$"
+                    }
+                ]
+            }
+        },
+        "/media/{id}/content": {
+            "get": {
+                "produces": [
+                    "content/unknown"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "output of the endpoint",
+                        "schema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "implicit",
+                        "pattern": "^[^/]+$"
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "RowCount":{
+            "properties": {
+                "rowCount":{
+                    "type":"integer"
+                }
+            }
+        },
+        "DeletePayload": {
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 10
+                }
+                
+            }
+        },
+        "DemoCustomerRecord":{
+            "properties": {
+                "id": {
+                    "type":"integer",
+                    "example": 1
+                },
+                "name":{
+                    "type":"string",
+                    "example":"Santa Clause"
+                }
+
+            }
+        },
+        "PAYLOAD2": {
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "content_type": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "PAYLOAD3": {
+            "properties": {
+                "status_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "PAYLOAD4": {
+            "properties": {
+                "file_name": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "type": "string"
+                },
+                "body": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
