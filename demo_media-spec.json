@@ -1,5 +1,6 @@
 {
     "swagger": "2.0",
+    
     "info": {
         "title": "ORDS generated API for demo module. ",
         "version": "1.0.0",
@@ -64,7 +65,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DemoCustomerRecord"
+                            "$ref": "#/definitions/DemoCustRow"
                         }
                     }
                 ]
@@ -158,6 +159,29 @@
                             "type": "object",
                             "properties": {}
                         }
+                    }
+                }
+            },
+            "put": {
+                "consumes":["application/json"],
+                "parameters": [
+                    {"name": "Demo Customer Row to create",
+                      "in": "body",
+                      "required": true,
+                      "schema":{"$ref":"#/definitions/DemoCustomerRow"}
+                      }
+                    ],
+                "responses": {
+                    "201":{
+                        "description": "回傳新增 customer 的 URL",
+                        "headers": {
+                            "location": {
+                                "type": "string",
+                                "description": "新增 customer 的 URL, for example: http://host/ords/cyutim/demo/customer/11"
+                            }
+                        }
+                        
+
                     }
                 }
             }
@@ -265,6 +289,55 @@
         }
     },
     "definitions": {
+        "DemoCustomerRow": {
+            "type":"object",
+            "properties": {
+                "customer_id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "cust_first_name": {
+                    "type": "string"
+                },
+                "cust_last_name": {
+                    "type": "string"
+                },
+                "cust_street_address1": {
+                    "type": "string"
+                },
+                "cust_street_address2": {
+                    "type": "string"
+                },
+                "cust_city": {
+                    "type": "string"
+                },
+                "cust_state": {
+                    "type": "string"
+                },
+                "cust_postal_code": {
+                    "type": "string"
+                },
+                "cust_email": {
+                    "type": "string"
+                },
+                "phone_number1": {
+                    "type": "string"
+                },
+                "phone_number2": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "credit_limit": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "tags": {
+                    "type": "string"
+                }
+            }
+        },
         "RowCount":{
             "properties": {
                 "rowCount":{
@@ -281,7 +354,7 @@
                 
             }
         },
-        "DemoCustomerRecord":{
+        "DemoCustRow":{
             "properties": {
                 "id": {
                     "type":"integer",
