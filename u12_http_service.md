@@ -109,7 +109,7 @@ Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
 
 Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
 
-### HTTPHeaders 類別
+### Angular 中的 HTTPHeaders 類別
 
 `@angular/common/http` 中的 [`HTTPHeaders`](https://angular.io/api/common/http/HttpHeaders) 用來表示 HTTP 通訊協定下的 Headers。
 
@@ -119,9 +119,11 @@ Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
 ```typescript
 // Method 1
 const httpHeaders:HttpHeaders = new HttpHeaders({"accept": "application/json"})
-// Method 2
+// Method 2: 使用 Setter and Getter
 const httpHeaders_1: HttpHeaders = new HttpHeaders().set("accept", "application/json");
 ```
+
+`HttpHeaders` 類別提供 `set()`, `get()`, `delete()`, `has()` 等方法操作 Header 內的 key-value pairs. 
 
 更多 HttpHeaders 類別的方法參考 https://angular.io/api/common/http/HttpHeaders。
 
@@ -130,8 +132,41 @@ const httpHeaders_1: HttpHeaders = new HttpHeaders().set("accept", "application/
 
 ## Make HTTP Get Request and Read Response
 
-### Get Request Options
-呼叫 HttpClient.get() 方法執行請求時可以提供 `options` 設定呼叫時的行為。
+### 最簡單的使用方式
+
+
+最簡單的 `httpClient.get()`呼叫方式, 直接使用預設值:
+
+```typescript
+public pingServer(): Observable<Object> {
+    return this.httpClient.get(this.endpointPingUrl);
+  }
+```
+
+此時, 對應到的多載函數的簽名為:
+
+```typescript
+// Overload #14
+// Constructs a GET request 
+// that interprets the body as a JSON object and returns the response body as a JSON object.
+
+get(url: string, 
+  options?: { 
+    headers?: HttpHeaders | { [header: string]: string | string[]; }; 
+    observe?: "body"; 
+    params?: HttpParams | { [param: string]: string | string[]; }; 
+    reportProgress?: boolean; 
+    responseType?: "json"; 
+    withCredentials?: boolean; }
+  ): Observable<Object>
+```
+將 Response Body 視為 JSON 物件並回傳 `Observable<Object>`
+
+`HttpClient.get()` 的多載版本的執行是由 `options` 參數內的屬性來決定。此參數還還供了其它屬性, 以控制 `HttpClient.get()` 的執行。
+
+### `HttpClient.get()` 的 Options 參數  
+
+呼叫 `HttpClient.get()` 方法執行請求時可以提供 `options` 參數設定呼叫時的行為。
 
 `options` 的定義如下:
 ```typescript
@@ -144,8 +179,14 @@ options: {
     withCredentials?: boolean,
   }
 ```
+其中:
+- `headers` 為 Request Header 
+- `observe` 為 回傳 Observable 內的資料內容, 可以是 body, events, 或是 response (header + body)
+- `params` 為請求參數(query parameters)
+- `responseType` 為回傳的資料的格式
 
-`observe` 及 `responseType` 用來控制使用那一個 `httpClient.get` 函數簽名, 稍後詳細討論。
+
+`observe` 及 `responseType` 兩個屬性用來控制使用那一個 `httpClient.get` 函數多載版本, 稍後詳細討論。
 
 特別注意 `observe` 及 `responseType` 使用上的陷井。這兩個欄位的資料型態是**列舉值**中的一種, 不是 `string`。寫錯時, 會產生多載函數(Overloaded function)配對上的錯誤。
 
@@ -173,7 +214,7 @@ let options = {
 - *OBSERVE AND RESPONSE TYPES* section in https://angular.io/guide/http#requesting-a-typed-response
 - [Setting http option as &#x27;responseType: &#x27;text&#x27;&#x27; causes compile failure for a http post request with angular HttpClient | StackOverflow](https://stackoverflow.com/questions/62369090/setting-http-option-as-responsetype-text-causes-compile-failure-for-a-http)
 
-### HttpClient.get() 方法
+### 不同的 HttpClient.get() 方法多載版本
 
 
 使用 `httpClient.get()` 提交請求的程式:
@@ -195,7 +236,9 @@ public pingServer(): Observable<string> {
 - url: string - 接受請求的 url
 - options - 選項
 
-回傳值則依照多載函數配對的結果有所不同。依此例來說, 配對到的 `httpClient.get()` 函數簽名為:
+Angular 使用 `observe` 及 `responseType` 兩個屬性決定要執行的多載版本, 不同的版本, 回傳的資料型態也不同。
+
+依前例來說, 在 `observe` 為 `body`, `response` 為 `text` 的設定下, 配對到的 `httpClient.get()` 函數簽名為:
 
 ```typescript
 get(url: string, 
@@ -208,37 +251,14 @@ get(url: string,
       withCredentials?: boolean; }
   ):Observable<string>
 ```
+回傳值型態為 `Observable<string>`。
 
-使用上特別注意, `options` 的 `observe` 及 `responseType` 會決定 `get()` 的簽名。
-
-`observe` 預設值為 `body`; `responseType` 的預設值為 `json`。
-
-若呼叫 `get()` 時沒有提供 `options`, 配對的簽名為:
-
-```typescript
-// Overload #14
-// Constructs a GET request 
-// that interprets the body as a JSON object and returns the response body as a JSON object.
-
-get(url: string, 
-  options?: { 
-    headers?: HttpHeaders | { [header: string]: string | string[]; }; 
-    observe?: "body"; 
-    params?: HttpParams | { [param: string]: string | string[]; }; 
-    reportProgress?: boolean; 
-    responseType?: "json"; 
-    withCredentials?: boolean; }
-  ): Observable<Object>
-```
-將 Response Body 視為 JSON 物件並回傳 `Observable<Object>`
 
 ### `HttpClient.get<T>()` 方法
 
+`HttpClient.get()` 有提供泛型的多載版本, 可以指定要回傳的型別 `T` 做為型別參數, `get<T>()` 會自動將回傳的 `Object` 轉換成指定的型別。
 
-
-**具型別參數的 get()**
-
-可以傳入要回傳的型別 `T` 做為型別參數, `get<T>()` 會自動將回傳的 `Object` 轉換成指定的型別。配對的函數簽名如下:
+多載版本的函數簽名如下:
 
 ```typescript
 // Overload #15
@@ -281,9 +301,11 @@ Ref: [HttpClient#get | Angular](https://angular.io/api/common/http/HttpClient#ge
     // Make request to get all rows
     // 注意, 型態由 OracleRestResponse 轉換成 Stock[]
     return this.httpClient
-      .get<OracleRestResponse>(endpoint, {headers: {accept: 'application/json'},
-                                               observe: 'body' as const,
-                                              responseType: 'json' as const})
+      .get<OracleRestResponse>(endpoint, 
+        { headers: {accept: 'application/json'},
+          observe: 'body' as const,
+          responseType: 'json' as const }
+        )
       .pipe(map( (body: OracleRestResponse) => {
           // 針對 Array 中的每一個元素做轉換, 回傳的仍是 Array, 只是元素內容不同。
           // 回傳 Stock[]

@@ -254,6 +254,9 @@ select * from demo_customers cust
 
 ### Optional Query parameters 的技巧
 
+Resource Template (test module in cyutim schema):
+`cyutim/test/emp/:job/:deptno`
+
 ```sql{class=line-numbers}
 select * from emp e 
     where e.job = :job 
@@ -267,6 +270,68 @@ URI pattern:
 `http://localhost:8080/ords/ordstest/test/emp/SALESMAN/30`
 - 加上兩個 optional parameters
 `http://localhost:8080/ords/ordstest/test/emp/SALESMAN/30?mgr=7698&sal=1500.`
+
+`:mgr` 及 `:sal` 不需要額外在 Get Handle 中設定 parameters, 可直接使用
+
+
+另外一個例子:
+
+Resource Template (demo module in cyutim schema)
+`cyutim/demo/customers`
+
+GET Handler 
+
+```sql {class=line-numbers}
+SELECT * from 
+    (select c.* ,
+            ROW_NUMBER() OVER (ORDER BY customer_id asc)
+    from demo_customers c
+    where c.credit_limit = nvl(:credit, c.credit_limit)
+    )
+```
+
+Without the optional parameter:
+`http://imsys/ords/cyutim/demo/customers/`
+
+With the optional parameter:
+`http://imsys/ords/cyutim/demo/customers/?credit=1500`
+
+Ref: [3.2.6.1.3 Using Query Strings for Optional Parameters](https://docs.oracle.com/database/ords-17/AELIG/developing-REST-applications.htm#AELIG-GUID-C9D763FD-9B74-4A27-9B80-6E500756E464)
+
+### 使用 FilterObject 篩選查詢資料
+
+如果不想修改 Resource Template, 但仍想使用條件查詢, 此時 FilterObject 是很有彈性的工具。
+
+Resource URL 
+`https://example.com/ords/scott/emp/`
+
+使用 query parameter 傳遞 FilterObject
+`https://example.com/ords/scott/emp/?q={"ENAME":"JOHN"}`
+
+
+Example: 加入 CUST_LAST_NAME 及 CUST_EMAIL 兩個欄位的查詢條件的 FilterObject 的 JSON 表示式: 
+
+```
+{
+    "CUST_LAST_NAME": {
+        "$and": [
+            {"$like": "%l%"},
+            {"CUST_EMAIL": {"$like": "%@%"}}
+        ]
+    }
+}
+```
+
+URL: 
+```
+http://imsys/ords/cyutim/demo/customers/?q={"CUST_LAST_NAME":{"$and":[{"$like":"%l%"},{"CUST_EMAIL": {"$null": null}}]}}
+```
+
+FilterObject 
+
+Ref [3.2.5.2 Filtering in Queries](https://docs.oracle.com/database/ords-17/AELIG/developing-REST-applications.htm#GUID-091748F8-3D14-402B-9310-25E6A9116B47)
+
+
 
 
 ## 使用 POST 新增資料至表格
@@ -404,43 +469,7 @@ Client 上傳的檔案或圖片儲存在 http body 中.
 
 ### Post Handler 程式碼
 
-```sql{class=line-numbers}
-declare
-    l_image_id number :=0;  
-    l_url varchar2(300);
-    l_body blob;
-    l_err_msg VARCHAR2(300);
-begin
-    -- uploaded file is placed in the body.
-    -- Restful service does not support the multipart/form-data protocal
-    l_body := :body;
-    
-    -- :body is defined by ORDS
-    -- :file_name, :file_type are defined in the parameter panel.
-    insert into demo_media
-             values  ( DEMO_MEDIA_SEQ.nextval , :file_name, :file_type, l_body)
-             RETURN id into l_image_id;
-    commit;
-
-    -- http status code that is defined in the parameter panel.
-    -- Inform the client that a new resource is generated.
-    :status := 201; 
-
-    -- Set the Location parameter in the http header of the response. 
-    -- Example of the returned location:
-    --  	http://imsys/ords/cyutim/demo/21
-    :location := './' || l_image_id; 
-
-exception
-    -- 例外處理
-    WHEN OTHERS then
-        l_err_msg := sqlerrm;
-        -- 將錯誤訊息存入 demo_debug table 中.
-        insert into demo_debug 
-            VALUES (demo_debug_seq.nextval, l_err_msg, current_timestamp, l_body);
-    commit;
-end;
-```
+@import "./src_codes/upload_post_handler.sql"{class=line-numbers}
 
 ### 測試
 
@@ -448,6 +477,7 @@ Request:
 ![](img/u21-i25.png)
 
 Response:
+回傳 location 應為: `http://imsys/ords/cyutim/demo/media/21/content`
 ![](img/u21-i24.png)
 
 
