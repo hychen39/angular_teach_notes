@@ -7,23 +7,38 @@
 
 ## 簡介
 
-Outlines:
-- What is the Oracle ORDS?
-- 使用 SQLDeveloper 設定資料庫的 ORDS 
-  - Module and its url prefix
-  - resource template and its uri pattern
-  - resource handler
-- 帶參數的 GET 操作
-
-- Parse the JSON data
-- 範例程式
-  - Post
-  - Get 
-  - Put
-  - Delete
-- 測試工具
-- ORDS-Specific Bind Variables
-
+- [Unit 21 使用 Oracle ORDS 提供 Restful Service](#unit-21-使用-oracle-ords-提供-restful-service)
+  - [簡介](#簡介)
+    - [Restful service 的觀念回顧](#restful-service-的觀念回顧)
+    - [What is the Oracle ORDS?](#what-is-the-oracle-ords)
+  - [ORACLE REST URL structure](#oracle-rest-url-structure)
+    - [結構](#結構)
+    - [範例](#範例)
+  - [使用 SQLDeveloper 建立 ORDS module 及其 resource](#使用-sqldeveloper-建立-ords-module-及其-resource)
+    - [在 Schema 中啟用 ORDS Service](#在-schema-中啟用-ords-service)
+    - [使用 Wizard 建立 module and resource template](#使用-wizard-建立-module-and-resource-template)
+    - [建立 resource handler: GET](#建立-resource-handler-get)
+    - [在 url 中使用 filter clause 限制回傳資料](#在-url-中使用-filter-clause-限制回傳資料)
+  - [帶參數的 GET 操作](#帶參數的-get-操作)
+    - [Optional Query parameters 的技巧](#optional-query-parameters-的技巧)
+  - [使用 POST 新增資料至表格](#使用-post-新增資料至表格)
+    - [建立測試表格及資源](#建立測試表格及資源)
+  - [使用 PUT 更新](#使用-put-更新)
+  - [使用 DELTE 刪除](#使用-delte-刪除)
+  - [Upload files](#upload-files)
+    - [操作情境](#操作情境)
+    - [上傳時的 request 設定](#上傳時的-request-設定)
+    - [Resource template 的設定](#resource-template-的設定)
+    - [增加並設定 resource template 的 uri pattern](#增加並設定-resource-template-的-uri-pattern)
+    - [加入 POST handler 到 resource template 中](#加入-post-handler-到-resource-template-中)
+    - [設定 Request header parameters 與 binding Variables 的對應關係.](#設定-request-header-parameters-與-binding-variables-的對應關係)
+    - [Post Handler 程式碼](#post-handler-程式碼)
+    - [測試](#測試)
+  - [Download a file](#download-a-file)
+    - [建立  Resource Template](#建立--resource-template)
+    - [GET handler 程式撰寫](#get-handler-程式撰寫)
+    - [測試](#測試-1)
+  - [References](#references)
 
 ### Restful service 的觀念回顧
 
@@ -51,7 +66,7 @@ Oracle ORDS 的 Resource 結構: 從 Schema 到 Resource handler
 `schema --(0..n) module --(0..n)resource template--(0..n)resource handler`
 
 ORACLE REST URL 結構:
-`POST http://<HOST>:<PORT>/ords/<schema>/<module_prefix>/<resource_uri>`
+`POST http://<HOST>/ords/<schema>/<module_prefix>/<resource_uri>`
 
 -  schema: DB Schema 的名稱
 -  module_prifix: modules 的 URI 前置(URI prefix)符號
@@ -66,7 +81,7 @@ ORACLE REST URL 結構:
 - employees resource template 的 URI pattern 為 `employees/`
 - employees resource template 下有一個處理 `GET` http 方法的 handler
 
-此 resource 的 url 為: `http://<HOST>:1521/ords/cyutim/hr/employees`
+此 resource 的 url 為: `http://<HOST>/ords/cyutim/hr/employees`
 
 handler 內的程式碼:
 ```sql{class=line-numbers}
@@ -77,6 +92,7 @@ select empno "$uri", rn, empno, ename, job, hiredate, mgr, sal, comm, deptno
          from emp
        ) tmp;
 ```
+ORDS 會將 `$` 開頭的欄位(例如, `$uri` 欄位)內容展開成為 URL。
 
 使用 Talent API Tester 測試的結果: 
 ![](img/u21-i03.png)
@@ -87,18 +103,36 @@ Request and Response:
 
 ## 使用 SQLDeveloper 建立 ORDS module 及其 resource
 
+### 在 Schema 中啟用 ORDS Service
+
+執行以下程式:
+
+```sql{class=line-numbers}
+begin
+    ords.enable_schema;
+end;
+/
+```
+
+Ref: [Before You Begin: REST Enabled SQL Service Requirements](https://docs.oracle.com/database/apex-18.1/HTMDB/rest-enabled-sql-requirements.htm#HTMDB-GUID-EFF2C573-8F07-4FA2-831D-A07371026853)
+
 ### 使用 Wizard 建立 module and resource template 
 
-- Create the module `demo` with the uri prefix `/demo/`  in the schema cyutim
-- Create the resource `customers` with the uri patterm `customers/`
+以下將:
+- Create the module `demo` with the uri prefix `/demo`  in the schema `cyutim`.
+- Create the resource `customers` with the uri patterm `/customers`
 
 Path to invoke the Wizard: 
 - REST Data Service > Module > Right Click Menu > New Module
-
 ![](img/u21-i05.png)
 
+Specify the module:
 ![](img/u21-i06.png)
+
+Specify the template:
 ![](img/u21-i07.png)
+
+Restful Summary:
 ![](img/u21-i08.png)
 
 The result:
@@ -113,8 +147,7 @@ Path: REST Data Services > Modules > demo > customers > Mouse Right Click Menu >
 
 ![](img/u21-i10.png)
 
-Set parameters for the handler of GET method
-
+Set the source type for the handler of GET method:
 ![](img/u21-i11.png)
 
 Source Type:
@@ -136,7 +169,7 @@ Ref: [Using Oracle Database Actions for Oracle Cloud](https://docs.oracle.com/en
 
 
 
-測試 URL: http://host/ords/cyutim/demo/customers
+測試 URL: http://imsys/ords/cyutim/demo/customers
 
 ![](img/u21-i15.png)
 
@@ -190,6 +223,8 @@ Ref: [Using Oracle Database Actions for Oracle Cloud](https://docs.oracle.com/en
 ```
 http://imsys/ords/cyutim/demo/customers?q={"customer_id":{"$gte":3}}
 ```
+使用 Query Parameters 傳入"限制條件物件"。
+
 Ref: https://docs.oracle.com/database/ords-17/AELIG/developing-REST-applications.htm#AELIG90103
 
 
@@ -200,7 +235,10 @@ User Case: 查詢顧客編號 1 的資料
 建立 Resource template with the URI Pattern: `customer/:id`
 - 其中 `:id` 為查詢參數, 在 SQL 中使用相同名稱的 binding variable 取得傳入的參數.
 
+Specify the template:
 ![](img/u21-i16.png)
+
+Restful Summary:
 ![](img/u21-i17.png)
 
 此 Template 的 `GET` method handler 的程式碼:
@@ -267,9 +305,9 @@ select * from emp e
 
 URI pattern: 
 - 只有 required parameter
-`http://localhost:8080/ords/ordstest/test/emp/SALESMAN/30`
+`http://localhost/ords/ordstest/test/emp/SALESMAN/30`
 - 加上兩個 optional parameters
-`http://localhost:8080/ords/ordstest/test/emp/SALESMAN/30?mgr=7698&sal=1500.`
+`http://localhost/ords/ordstest/test/emp/SALESMAN/30?mgr=7698&sal=1500.`
 
 `:mgr` 及 `:sal` 不需要額外在 Get Handle 中設定 parameters, 可直接使用
 
@@ -352,12 +390,24 @@ create table demo_cust (id number,
 ![](img/u21-i19.png)
 
 
+Use Case: 資料以 JSON 的格式放在 http body 中, 要儲存到 DB 中
+- URI pattern: /cust
+- http method: POST
+
+則 POST handler 程式執行程序如下:
+1. 取得 http body (Payload), 其型態為 BLOB
+2. 將 body 的型態轉換成 CLOB, 以便 parse payload 內的 JSON 內容
+3. Parse payload 內的 JSON 內容, 取得各欄位
+4. Insert into table
+5. 回覆 response
+
 POST handler 的程式碼:
 
 @import "./src_codes/post_handler.sql" {class=line-numbers}
 
 執行結果:
 ![](img/u21-i20.png)
+
 ![](img/u21-i21.png)
 
 
@@ -378,10 +428,9 @@ Implicit Parameters in ORDS 參考:
 Handler 的處理程序
 
 Use case: Request 內有更新的一筆記錄, 需要更新到 database
-
-URI pattern: `cust/`
-HTTP Method: PUT
-Payload: Complete record to be updated in the JSON format
+- URI pattern: `cust/`
+- HTTP Method: PUT
+- Payload: Complete record to be updated in the JSON format
 
 程序:
 1. 取得 Request Body
@@ -412,7 +461,7 @@ HTTP Method: DELETE
 @import "./src_codes/delete_handler.sql" {class=line-numbers}
 
 
-## Upload and Download files
+## Upload files
 
 Main Ref: [Building a Web Service for Uploading and Downloading Files: The Video!](https://www.thatjeffsmith.com/archive/2018/11/building-a-web-service-for-uploading-and-downloading-files-the-video/)
 
@@ -467,6 +516,11 @@ Client 上傳的檔案或圖片儲存在 http body 中.
 
 目前 Reseful service 不支援 multipart/form-data 上傳, 因為資安的問題. 參考 [7]
 
+備註: 
+1. 應先撰寫完成 Post Handler 程式碼之後再來設定 Request Parameters 與 Binding Variable 間的對應關係.
+2. 對於 response status 可以使用自動 binding variable  `:status_code`, 其會自動對應到 `X-ORDS-STATUS-CODE` 參數, 就可以省略此 binding variable 的宣告.
+3. `:file_type` binding variable 可以不用. 直接使用自動 binding variable  `:content_type` 可取得請求的 content type. 
+
 ### Post Handler 程式碼
 
 @import "./src_codes/upload_post_handler.sql"{class=line-numbers}
@@ -480,6 +534,31 @@ Response:
 回傳 location 應為: `http://imsys/ords/cyutim/demo/media/21/content`
 ![](img/u21-i24.png)
 
+## Download a file 
+
+### 建立  Resource Template
+
+uri: `media/:id/content`
+
+
+
+### GET handler 程式撰寫
+
+SQL 的 column 第一個為 http header 中的 content-type, 第 2 個 column 為放在 response body 中回傳的檔案或圖片.
+```
+select content_type, content
+  from demo_MEDIA
+ where ID = :id;
+```
+更多資訊參考 [8].
+
+
+### 測試
+
+![](img/u21-i26.png)
+![](img/u21-i27.png)
+
+
 
 ## References
 1. [Developing Oracle REST Data Services Applications](https://docs.oracle.com/database/ords-17/AELIG/developing-REST-applications.htm#AELIG90011)
@@ -489,3 +568,4 @@ Response:
 5. [REST Data Services Developers Guide](https://www.oracle.com/application-development/technologies/rest-data-services/listener-dev-guide.html#about_uris)
 6. [HTTP headers | Location - GeeksforGeeks](https://www.geeksforgeeks.org/http-headers-location/)
 7. [has ORDS supported multipart form data Request](https://community.oracle.com/tech/developers/discussion/4132424/has-ords-supported-multipart-form-data-request)
+8. [Downloading/Streaming Content with ORDS (File Downloads!)](https://www.thatjeffsmith.com/archive/2021/03/downloading-streaming-content-with-ords-file-downloads/)
