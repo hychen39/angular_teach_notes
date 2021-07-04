@@ -92,6 +92,32 @@
                 ]
             }
         },
+        "/customer/" :{
+            "post": {
+                "description": "Create a new customer",
+                "consumes":["application/json"],
+                "parameters": [
+                    {"name": "Demo Customer Row to create",
+                      "in": "body",
+                      "required": true,
+                      "schema":{"$ref":"#/definitions/DemoCustomerRow"}
+                      }
+                    ],
+                "responses": {
+                    "201":{
+                        "description": "回傳新增 customer 的 URL",
+                        "headers": {
+                            "location": {
+                                "type": "string",
+                                "description": "新增 customer 的 URL, for example: http://host/ords/cyutim/demo/customer/11"
+                            }
+                        }
+                        
+
+                    }
+                }
+            }
+        },
         "/customer/{id}": {
             "delete": {
                 "responses": {
@@ -147,7 +173,8 @@
                 ]
             }
         },
-        "/customers": {
+        
+        "/customers/": {
             "get": {
                 "produces": [
                     "application/json"
@@ -161,30 +188,8 @@
                         }
                     }
                 }
-            },
-            "put": {
-                "consumes":["application/json"],
-                "parameters": [
-                    {"name": "Demo Customer Row to create",
-                      "in": "body",
-                      "required": true,
-                      "schema":{"$ref":"#/definitions/DemoCustomerRow"}
-                      }
-                    ],
-                "responses": {
-                    "201":{
-                        "description": "回傳新增 customer 的 URL",
-                        "headers": {
-                            "location": {
-                                "type": "string",
-                                "description": "新增 customer 的 URL, for example: http://host/ords/cyutim/demo/customer/11"
-                            }
-                        }
-                        
-
-                    }
-                }
             }
+            
         },
         "/media": {
             "get": {
