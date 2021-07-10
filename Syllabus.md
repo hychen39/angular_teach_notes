@@ -88,6 +88,10 @@ Memos for U14:
 
 [Unit 21 Restful Service by Oracle ORDS](./u21_restful_service_ords.md)
 
+
+[Unit 22 使用 HttpClient 取得及上傳文字及圖片](./u22_http_client_ords.md)
+
+
 開始介紹 Angular Material Components
 
 [Uint 1X 安裝 Angular Materials 及 Theme 到專案中]
