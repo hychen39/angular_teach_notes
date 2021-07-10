@@ -78,13 +78,14 @@ Memos for U14:
 
 
 [Unit 18 在 Angular 中使用 Bootstrap CSS framework](./u18_bootstrap_modal_dialog.md)
-    - Angular CLI 的設定
-    - 彈跳視窗
+- Published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/03/23/u18_bootstrap_modal_dialog.html)
 
 [Unit 19 Grid Layout in CSS](./u19_css_grid_layout.md)
-- Grid layout
+- Published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/04/04/u19_css_grid_layout.html)
+
 
 [Unit 20 Flex Layout in CSS](./u20_css_flex_layout.md)
+- Published in [https://hychen39.github.io/angular/](https://hychen39.github.io/angular/2021/04/05/u20_css_flex_layout.html)
 
 [Unit 21 Restful Service by Oracle ORDS](./u21_restful_service_ords.md)
 
